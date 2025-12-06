@@ -1,0 +1,61 @@
+{
+  "name": "grudge-studio",
+  "version": "1.0.0",
+  "description": "GRUDGE STUDIO - Complete 3D Game Development SDK with Three.js, Socket.io, and AI assistance",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "core",
+    "render",
+    "controllers",
+    "terrain",
+    "net",
+    "ui",
+    "assets",
+    "docs",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MolochDaGod/GrudgeStudioNPM.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MolochDaGod/GrudgeStudioNPM/issues"
+  },
+  "homepage": "https://github.com/MolochDaGod/GrudgeStudioNPM#readme",
+  "exports": {
+    ".": "./index.js",
+    "./core": "./core/index.js",
+    "./render": "./render/index.js",
+    "./controllers": "./controllers/index.js",
+    "./terrain": "./terrain/index.js",
+    "./net": "./net/index.js",
+    "./ui": "./ui/index.js",
+    "./assets": "./assets/index.js",
+    "./docs": "./docs/index.js"
+  },
+  "keywords": [
+    "game-engine",
+    "three.js",
+    "socket.io",
+    "multiplayer",
+    "3d-games",
+    "game-development",
+    "sdk",
+    "framework",
+    "procedural-terrain",
+    "character-controller",
+    "combat-system",
+    "networking",
+    "ui-canvas",
+    "asset-management"
+  ],
+  "author": "Grudge Studio",
+  "license": "MIT",
+  "peerDependencies": {
+    "three": ">=0.160.0",
+    "socket.io": ">=4.0.0",
+    "socket.io-client": ">=4.0.0"
+  }
+}

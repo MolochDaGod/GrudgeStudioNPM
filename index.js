@@ -1,0 +1,12 @@
+export * from './core/index.js'
+export * from './render/index.js'
+export * from './controllers/index.js'
+export * from './terrain/index.js'
+export * from './net/index.js'
+export * from './ui/index.js'
+export * from './assets/index.js'
+export * from './docs/index.js'
+
+export const VERSION = '1.0.0'
+export const STUDIO_NAME = 'GRUDGE STUDIO'
+export const DESCRIPTION = 'Comprehensive game development SDK for 3D multiplayer games with Three.js'
