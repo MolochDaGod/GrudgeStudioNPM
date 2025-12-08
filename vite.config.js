@@ -18,7 +18,9 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: resolve(__dirname, 'index.html'),
-          playground: resolve(__dirname, 'playground.html')
+          playground: resolve(__dirname, 'playground.html'),
+          'fps-game': resolve(__dirname, 'examples/fps-game.html'),
+          'rpg-adventure': resolve(__dirname, 'examples/rpg-adventure.html')
         }
       },
       
