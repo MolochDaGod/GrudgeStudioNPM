@@ -1,0 +1,221 @@
+name: Deploy Grudge Studio
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run linting
+      run: npm run lint
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Build application
+      run: npm run build
+
+  build-and-push-docker:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./deployment/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-github-pages:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build for production
+      run: npm run build:production
+      env:
+        NODE_ENV: production
+        PUBLIC_URL: ${{ github.event.repository.name }}
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './dist'
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  deploy-puter-cloud:
+    if: github.ref == 'refs/heads/production'
+    needs: [test, build-and-push-docker]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build for production
+      run: npm run build:production
+      env:
+        NODE_ENV: production
+    
+    - name: Deploy to Puter Cloud
+      env:
+        PUTER_API_KEY: ${{ secrets.PUTER_API_KEY }}
+        PUTER_APP_NAME: ${{ secrets.PUTER_APP_NAME }}
+      run: |
+        npx puter-cli login --api-key $PUTER_API_KEY
+        npx puter-cli deploy ./dist --name $PUTER_APP_NAME --production
+
+  deploy-github-pages:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install --legacy-peer-deps
+    
+    - name: Build for GitHub Pages
+      run: npm run build:pages
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        cname: grudgestudio.dev
+
+  deploy-self-hosted:
+    if: github.ref == 'refs/heads/production'
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to self-hosted server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        key: ${{ secrets.DEPLOY_SSH_KEY }}
+        script: |
+          cd /opt/grudge-studio
+          
+          # Pull latest images
+          docker compose -f deployment/docker-compose.production.yml pull
+          
+          # Update application
+          docker compose -f deployment/docker-compose.production.yml up -d --remove-orphans
+          
+          # Clean up old images
+          docker image prune -af
+          
+          # Health check
+          sleep 30
+          curl -f http://localhost/health || exit 1
+
+  notify:
+    if: always()
+    needs: [test, build-and-push-docker, deploy-github-pages, deploy-puter-cloud, deploy-self-hosted]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Notify deployment status
+      uses: 8398a7/action-slack@v3
+      if: always()
+      with:
+        status: ${{ job.status }}
+        channel: '#deployments'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow

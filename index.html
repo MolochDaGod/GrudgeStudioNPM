@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grudge Studio - 3D Game Engine</title>
+    <meta name="description" content="Grudge Studio - A comprehensive 3D game development framework with multiplayer support, terrain generation, and deployment capabilities." />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Critical CSS for faster loading */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+        color: white;
+        overflow-x: hidden;
+      }
+      
+      .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+      }
+      
+      .hero h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 4rem;
+        color: #ff6b35;
+        text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+        margin: 0;
+        letter-spacing: 3px;
+      }
+      
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: opacity 0.5s ease;
+      }
+      
+      .loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading" class="loading">
+      <div>
+        <h1 style="font-family: 'Cinzel', serif; color: #ff6b35; font-size: 3rem; margin-bottom: 2rem;">GRUDGE STUDIO</h1>
+        <div style="width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+          <div id="progress" style="height: 100%; background: linear-gradient(90deg, #ff6b35, #35a7ff); width: 0%; transition: width 0.3s;"></div>
+        </div>
+        <p style="margin-top: 1rem; color: #ccc;">Loading Grudge Studio...</p>
+      </div>
+    </div>
+
+    <div id="app">
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <h1>GRUDGE STUDIO</h1>
+          <p style="font-size: 1.5rem; color: #ccc; margin: 2rem 0;">3D Game Development Framework</p>
+          <div style="display: flex; gap: 2rem; justify-content: center; margin-top: 3rem;">
+            <a href="/playground.html" style="background: linear-gradient(135deg, #ff6b35, #e55a2b); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;">
+              🎮 Launch Playground
+            </a>
+            <a href="https://github.com/MolochDaGod/GrudgeStudioNPM" style="background: rgba(255,255,255,0.1); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; border: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease;">
+              📚 Documentation
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section style="padding: 100px 50px; background: rgba(0,0,0,0.3);">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+          <h2 style="font-family: 'Cinzel', serif; font-size: 3rem; color: #ffd700; margin-bottom: 4rem;">Features</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+            <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,107,53,0.3);">
+              <h3 style="color: #ff6b35; font-size: 1.5rem; margin-bottom: 1rem;">🎮 Character System</h3>
+              <p>Multiple character models with animations, combat systems, and customizable abilities.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(53,167,255,0.3);">
+              <h3 style="color: #35a7ff; font-size: 1.5rem; margin-bottom: 1rem;">🌍 Terrain Generation</h3>
+              <p>Procedural terrain with multiple biomes, LOD optimization, and real-time modification.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,215,0,0.3);">
+              <h3 style="color: #ffd700; font-size: 1.5rem; margin-bottom: 1rem;">🚀 Easy Deployment</h3>
+              <p>Deploy to GitHub Pages, Puter Cloud, or self-host with Docker in minutes.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Playground Preview -->
+      <section style="padding: 100px 50px;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+          <h2 style="font-family: 'Cinzel', serif; font-size: 3rem; color: #ffd700; margin-bottom: 2rem;">Interactive Playground</h2>
+          <p style="font-size: 1.2rem; color: #ccc; margin-bottom: 3rem;">Experience the power of Grudge Studio with our interactive 3D playground featuring multiple character models, environments, and game modes.</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 3rem 0;">
+            <div style="text-align: center;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ff6b35, #e55a2b); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">🏟️</div>
+              <h3 style="color: #ff6b35;">Arena Mode</h3>
+              <p style="color: #ccc; font-size: 0.9rem;">Battle in customizable arenas with AI opponents</p>
+            </div>
+            <div style="text-align: center;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #35a7ff, #2691e6); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">🏗️</div>
+              <h3 style="color: #35a7ff;">World Builder</h3>
+              <p style="color: #ccc; font-size: 0.9rem;">Create and modify terrain in real-time</p>
+            </div>
+            <div style="text-align: center;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ffd700, #e6c200); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">🎭</div>
+              <h3 style="color: #ffd700;">Character Showcase</h3>
+              <p style="color: #ccc; font-size: 0.9rem;">View and animate different character models</p>
+            </div>
+          </div>
+          
+          <a href="/playground.html" style="background: linear-gradient(135deg, #ff6b35, #e55a2b); color: white; padding: 20px 40px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; display: inline-block; margin-top: 2rem; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);">
+            🚀 Enter Playground
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Simple loading animation
+      let progress = 0;
+      const progressBar = document.getElementById('progress');
+      const loading = document.getElementById('loading');
+      
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          setTimeout(() => {
+            loading.classList.add('hidden');
+          }, 500);
+        }
+        progressBar.style.width = progress + '%';
+      }, 100);
+
+      // Add smooth scrolling and hover effects
+      document.addEventListener('DOMContentLoaded', () => {
+        // Add hover effects to buttons
+        document.querySelectorAll('a').forEach(link => {
+          if (link.style.background) {
+            link.addEventListener('mouseenter', () => {
+              link.style.transform = 'translateY(-3px)';
+              link.style.boxShadow = '0 15px 35px rgba(255, 107, 53, 0.4)';
+            });
+            link.addEventListener('mouseleave', () => {
+              link.style.transform = 'translateY(0)';
+              link.style.boxShadow = '0 10px 30px rgba(255, 107, 53, 0.3)';
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

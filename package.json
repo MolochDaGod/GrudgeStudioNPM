@@ -1,7 +1,7 @@
 {
   "name": "grudge-studio",
-  "version": "1.0.0",
-  "description": "GRUDGE STUDIO - Complete 3D Game Development SDK with Three.js, Socket.io, and AI assistance",
+  "version": "1.2.0",
+  "description": "GRUDGE STUDIO - Complete 3D Game Development SDK with Three.js, Socket.io, Advanced Shaders, Physics, AI Assistance, and Deployment Tools",
   "type": "module",
   "main": "index.js",
   "files": [
@@ -14,7 +14,11 @@
     "ui",
     "assets",
     "docs",
-    "README.md"
+    "src",
+    "ai-agent",
+    "README.md",
+    "TOOLS.md",
+    "GETTING_STARTED.md"
   ],
   "repository": {
     "type": "git",
@@ -33,7 +37,10 @@
     "./net": "./net/index.js",
     "./ui": "./ui/index.js",
     "./assets": "./assets/index.js",
-    "./docs": "./docs/index.js"
+    "./docs": "./docs/index.js",
+    "./tools": "./src/tools/index.js",
+    "./playground": "./src/playground.js",
+    "./ai-agent": "./ai-agent/core/GrudgeStudioAgent.js"
   },
   "keywords": [
     "game-engine",
@@ -51,11 +58,43 @@
     "ui-canvas",
     "asset-management"
   ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:pages": "vite build --mode pages --outDir dist --base /GrudgeStudioNPM/",
+    "build:demo": "vite build --mode demo --outDir dist",
+    "build:production": "vite build --mode production",
+    "preview": "vite preview",
+    "serve": "vite preview --port 3000",
+    "deploy:github": "npm run build:pages && gh-pages -d dist",
+    "deploy:puter": "npm run build:production && puter deploy",
+    "deploy:puter-cloud": "puter cloud deploy",
+    "deploy:docker": "docker build -t grudge-studio:latest . && docker run -p 3000:3000 grudge-studio:latest",
+    "self-host": "node tools/self-host.js",
+    "server": "node server/index.js",
+    "server:prod": "NODE_ENV=production node server/index.js",
+    "test": "jest",
+    "lint": "eslint src --ext .js,.ts",
+    "docs:generate": "node scripts/generate-docs.js"
+  },
   "author": "Grudge Studio",
   "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "gh-pages": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "@types/three": "^0.160.0"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
   "peerDependencies": {
-    "three": ">=0.160.0",
     "socket.io": ">=4.0.0",
     "socket.io-client": ">=4.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }

@@ -1,0 +1,95 @@
+{
+  "$version": "v1.1.0",
+  "$requires": ["config.json"],
+  "config_name": "grudge-studio-production",
+  
+  "domain": "yourdomain.com",
+  "protocol": "https",
+  "http_port": 4100,
+  "pub_port": 443,
+  
+  "production": true,
+  "debug": false,
+  "env": "production",
+  
+  "grudge_studio": {
+    "enabled": true,
+    "multiplayer": {
+      "max_players": 128,
+      "enable_voice_chat": true,
+      "tick_rate": 60,
+      "anti_cheat": true
+    },
+    "terrain": {
+      "chunk_size": 256,
+      "render_distance": 12,
+      "lod_levels": 6,
+      "streaming": true
+    },
+    "assets": {
+      "cdn_enabled": true,
+      "cdn_url": "https://cdn.yourdomain.com",
+      "local_cache": true,
+      "compression": true,
+      "optimization": true
+    },
+    "performance": {
+      "enable_monitoring": true,
+      "metrics_port": 9090,
+      "health_check": "/health"
+    }
+  },
+  
+  "services": {
+    "database": {
+      "engine": "postgresql",
+      "host": "localhost",
+      "port": 5432,
+      "database": "grudge_studio_prod",
+      "username": "grudge_user",
+      "ssl": true,
+      "pool": {
+        "min": 2,
+        "max": 10
+      }
+    },
+    "redis": {
+      "host": "redis",
+      "port": 6379,
+      "enabled": true,
+      "cluster": false
+    },
+    "file-cache": {
+      "disk_limit": 107374182400,
+      "disk_max_size": 10485760,
+      "precache_size": 2147483648,
+      "path": "./production-cache"
+    }
+  },
+  
+  "ssl": {
+    "cert_path": "/etc/ssl/puter/cert.pem",
+    "key_path": "/etc/ssl/puter/key.pem",
+    "force_https": true
+  },
+  
+  "security": {
+    "disable_temp_users": true,
+    "disable_user_signup": false,
+    "require_email_verification": true,
+    "rate_limiting": true,
+    "cors": {
+      "enabled": true,
+      "origins": ["https://yourdomain.com", "https://api.yourdomain.com"]
+    }
+  },
+  
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "destinations": ["console", "file"],
+    "file_path": "/var/log/grudge-studio/app.log",
+    "max_file_size": "100MB",
+    "max_files": 10
+  }
+}

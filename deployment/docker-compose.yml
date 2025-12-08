@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  grudge-studio:
+    image: ghcr.io/heyputer/puter:latest
+    container_name: grudge-studio-main
+    ports:
+      - "4100:4100"
+    volumes:
+      - ./config:/etc/puter
+      - ./data:/var/puter
+      - ./games:/var/puter/games
+    environment:
+      - NODE_ENV=development
+      - PUTER_CONFIG_PROFILE=grudge-studio
+      - GRUDGE_STUDIO_MODE=true
+    restart: unless-stopped
+    networks:
+      - grudge-network
+
+  game-server:
+    image: node:18-alpine
+    container_name: grudge-studio-gameserver
+    working_dir: /app
+    volumes:
+      - ../:/app
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+    command: npm run server
+    environment:
+      - NODE_ENV=development
+      - SOCKET_PORT=3000
+      - HTTP_PORT=8080
+    depends_on:
+      - grudge-studio
+    networks:
+      - grudge-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: grudge-studio-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - grudge-network
+
+volumes:
+  redis-data:
+
+networks:
+  grudge-network:
+    driver: bridge

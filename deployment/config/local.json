@@ -1,0 +1,64 @@
+{
+  "$version": "v1.1.0",
+  "$requires": ["config.json"],
+  "config_name": "grudge-studio-local",
+  
+  "domain": "puter.localhost",
+  "protocol": "http",
+  "http_port": 4100,
+  "allow_nipio_domains": true,
+  
+  "grudge_studio": {
+    "enabled": true,
+    "multiplayer": {
+      "max_players": 64,
+      "enable_voice_chat": true,
+      "tick_rate": 60
+    },
+    "terrain": {
+      "chunk_size": 512,
+      "render_distance": 8,
+      "lod_levels": 4
+    },
+    "assets": {
+      "cdn_enabled": false,
+      "local_cache": true,
+      "compression": true
+    },
+    "physics": {
+      "gravity": -9.81,
+      "time_step": 0.016667,
+      "substeps": 3
+    }
+  },
+  
+  "services": {
+    "database": {
+      "engine": "sqlite",
+      "path": "grudge-studio.sqlite"
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "enabled": false
+    },
+    "file-cache": {
+      "disk_limit": 10737418240,
+      "disk_max_size": 1048576,
+      "precache_size": 419430400,
+      "path": "./game-cache"
+    }
+  },
+  
+  "security": {
+    "disable_temp_users": false,
+    "disable_user_signup": false,
+    "require_email_verification": false
+  },
+  
+  "development": {
+    "enable_devtools": true,
+    "hot_reload": true,
+    "debug_mode": true
+  }
+}

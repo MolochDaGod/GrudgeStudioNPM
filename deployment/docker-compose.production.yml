@@ -1,0 +1,171 @@
+version: '3.8'
+
+services:
+  grudge-studio:
+    image: ghcr.io/heyputer/puter:latest
+    container_name: grudge-studio-prod
+    ports:
+      - "4100:4100"
+      - "4101:4101"
+    volumes:
+      - ./config:/etc/puter
+      - ./data:/var/puter
+      - ./ssl:/etc/ssl/puter
+      - ./games:/var/puter/games
+    environment:
+      - NODE_ENV=production
+      - PUTER_CONFIG_PROFILE=production
+      - GRUDGE_STUDIO_MODE=true
+    restart: unless-stopped
+    networks:
+      - grudge-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  nginx:
+    image: nginx:alpine
+    container_name: grudge-studio-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - grudge-studio
+    restart: unless-stopped
+    networks:
+      - grudge-network
+
+  game-server:
+    image: node:18-alpine
+    container_name: grudge-studio-gameserver-prod
+    working_dir: /app
+    volumes:
+      - ../:/app:ro
+    ports:
+      - "3000:3000"
+    command: npm run server:prod
+    environment:
+      - NODE_ENV=production
+      - SOCKET_PORT=3000
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - grudge-studio
+      - redis
+    restart: unless-stopped
+    networks:
+      - grudge-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: grudge-studio-redis-prod
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - ./redis.conf:/etc/redis/redis.conf:ro
+    command: redis-server /etc/redis/redis.conf
+    restart: unless-stopped
+    networks:
+      - grudge-network
+    environment:
+      - PUTER_DOMAIN=${PUTER_DOMAIN:-localhost}
+      - PUTER_PROTOCOL=${PUTER_PROTOCOL:-http}
+      - PUTER_JWT_SECRET=${PUTER_JWT_SECRET}
+      - PUTER_COOKIE_SECRET=${PUTER_COOKIE_SECRET}
+      - NODE_ENV=production
+    restart: unless-stopped
+    depends_on:
+      - database
+      - redis
+
+  # Database for Persistent Storage
+  database:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=grudge_studio
+      - POSTGRES_USER=${DB_USER:-grudge}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+
+  # Redis for Caching and Sessions
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  # Load Balancer (Optional)
+  nginx-lb:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx-lb.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - grudge-frontend
+    restart: unless-stopped
+    profiles:
+      - load-balancer
+
+  # Monitoring with Prometheus (Optional)
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Grafana for Metrics Visualization (Optional)
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  default:
+    name: grudge-studio-network
+    driver: bridge

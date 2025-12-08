@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grudge Arena - 3D Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/GrudgeStudioNPM/assets/playground-Dzia5Tb3.js"></script>
+    <link rel="stylesheet" crossorigin href="/GrudgeStudioNPM/assets/playground-2pDG8KW2.css">
+  </head>
+  <body>
+    <canvas class="webgl"></canvas>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <h1>GRUDGE STUDIO</h1>
+          <p>3D Playground</p>
+        </div>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+        <p class="loading-text">Loading assets...</p>
+      </div>
+    </div>
+
+    <!-- Main Playground UI -->
+    <div id="playground-ui">
+      <!-- Character Selection Panel -->
+      <div class="character-panel">
+        <h3>Characters</h3>
+        <div class="character-grid">
+          <div class="character-card active" data-character="orc-warrior">
+            <img src="/assets/characters/orc-warrior.png" alt="Orc Warrior" />
+            <span>Orc Warrior</span>
+          </div>
+          <div class="character-card" data-character="skeleton-mage">
+            <img src="/assets/characters/skeleton-mage.png" alt="Skeleton Mage" />
+            <span>Skeleton Mage</span>
+          </div>
+          <div class="character-card" data-character="elf-ranger">
+            <img src="/assets/characters/elf-ranger.png" alt="Elf Ranger" />
+            <span>Elf Ranger</span>
+          </div>
+          <div class="character-card" data-character="human-paladin">
+            <img src="/assets/characters/human-paladin.png" alt="Human Paladin" />
+            <span>Human Paladin</span>
+          </div>
+          <div class="character-card" data-character="dwarf-berserker">
+            <img src="/assets/characters/dwarf-berserker.png" alt="Dwarf Berserker" />
+            <span>Dwarf Berserker</span>
+          </div>
+          <div class="character-card" data-character="dwarven-guardian">
+            <img src="/assets/characters/dwarven-guardian.png" alt="Dwarven Guardian" />
+            <span>Dwarven Guardian</span>
+          </div>
+        </div>
+        
+        <!-- Character Actions -->
+        <div class="character-actions">
+          <button id="btn-animate" class="action-btn">Play Animation</button>
+          <button id="btn-combat-stance" class="action-btn">Combat Stance</button>
+          <button id="btn-victory-pose" class="action-btn">Victory Pose</button>
+        </div>
+      </div>
+
+      <!-- Environment Controls -->
+      <div class="controls-panel">
+        <h3>Environment</h3>
+        <div class="control-group">
+          <label>Terrain Scale</label>
+          <input type="range" id="terrain-scale" min="0.1" max="5" step="0.1" value="1">
+          <span class="value-display">1.0</span>
+        </div>
+        <div class="control-group">
+          <label>Terrain Height</label>
+          <input type="range" id="terrain-height" min="0" max="10" step="0.5" value="2">
+          <span class="value-display">2.0</span>
+        </div>
+        <div class="control-group">
+          <label>Noise Frequency</label>
+          <input type="range" id="noise-freq" min="0.1" max="2" step="0.1" value="0.5">
+          <span class="value-display">0.5</span>
+        </div>
+        <div class="control-group">
+          <label>Time Speed</label>
+          <input type="range" id="time-speed" min="0" max="2" step="0.1" value="0.5">
+          <span class="value-display">0.5</span>
+        </div>
+        <div class="control-group">
+          <label>Environment</label>
+          <select id="environment-preset">
+            <option value="forest">Enchanted Forest</option>
+            <option value="desert">Desert Wasteland</option>
+            <option value="arctic">Frozen Tundra</option>
+            <option value="volcanic">Volcanic Realm</option>
+            <option value="underwater">Underwater Cavern</option>
+            <option value="floating">Floating Islands</option>
+          </select>
+        </div>
+        
+        <!-- Lighting Controls -->
+        <h4>Lighting</h4>
+        <div class="control-group">
+          <label>Sun Intensity</label>
+          <input type="range" id="sun-intensity" min="0" max="2" step="0.1" value="1">
+          <span class="value-display">1.0</span>
+        </div>
+        <div class="control-group">
+          <label>Ambient Light</label>
+          <input type="range" id="ambient-light" min="0" max="1" step="0.05" value="0.3">
+          <span class="value-display">0.3</span>
+        </div>
+        <div class="control-group">
+          <label>Fog Density</label>
+          <input type="range" id="fog-density" min="0" max="0.1" step="0.005" value="0.02">
+          <span class="value-display">0.02</span>
+        </div>
+        
+        <!-- Camera Controls -->
+        <h4>Camera</h4>
+        <button id="btn-reset" class="control-btn">Reset Camera</button>
+        <button id="btn-follow-mode" class="control-btn">Follow Mode</button>
+        <button id="btn-free-cam" class="control-btn active">Free Camera</button>
+        <button id="btn-cinematic" class="control-btn">Cinematic View</button>
+      </div>
+
+      <!-- Game Modes Panel -->
+      <div class="modes-panel">
+        <h3>Game Modes</h3>
+        <button id="btn-sandbox" class="mode-btn active">Sandbox</button>
+        <button id="btn-arena" class="mode-btn">Arena Battle</button>
+        <button id="btn-exploration" class="mode-btn">Exploration</button>
+        <button id="btn-building" class="mode-btn">World Builder</button>
+        
+        <!-- Arena Mode Controls (hidden by default) -->
+        <div id="arena-controls" class="mode-controls" style="display: none;">
+          <h4>Arena Settings</h4>
+          <div class="control-group">
+            <label>Arena Size</label>
+            <select id="arena-size">
+              <option value="small">Small (20x20)</option>
+              <option value="medium">Medium (40x40)</option>
+              <option value="large">Large (60x60)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label>Opponents</label>
+            <input type="range" id="opponent-count" min="1" max="8" step="1" value="2">
+            <span class="value-display">2</span>
+          </div>
+          <button id="btn-start-battle" class="control-btn">Start Battle!</button>
+        </div>
+
+        <!-- Building Mode Controls -->
+        <div id="building-controls" class="mode-controls" style="display: none;">
+          <h4>Building Tools</h4>
+          <div class="tool-grid">
+            <button class="tool-btn" data-tool="terrain">Terrain</button>
+            <button class="tool-btn" data-tool="structures">Structures</button>
+            <button class="tool-btn" data-tool="vegetation">Vegetation</button>
+            <button class="tool-btn" data-tool="water">Water</button>
+          </div>
+          <button id="btn-save-world" class="control-btn">Save World</button>
+          <button id="btn-load-world" class="control-btn">Load World</button>
+        </div>
+      </div>
+
+      <!-- Info and Navigation -->
+      <div class="info-panel">
+        <div class="stats-display">
+          <div class="stat">
+            <label>FPS:</label>
+            <span id="fps-counter">60</span>
+          </div>
+          <div class="stat">
+            <label>Triangles:</label>
+            <span id="triangle-count">0</span>
+          </div>
+          <div class="stat">
+            <label>Draw Calls:</label>
+            <span id="draw-calls">0</span>
+          </div>
+        </div>
+        <div class="controls-info">
+          <p><strong>Mouse:</strong> Orbit | <strong>Scroll:</strong> Zoom | <strong>WASD:</strong> Pan</p>
+          <p><strong>Space:</strong> Jump | <strong>Shift:</strong> Run | <strong>C:</strong> Change Camera</p>
+        </div>
+        <div class="navigation">
+          <a href="/" class="nav-btn back-btn">← Back to Game</a>
+          <button id="btn-fullscreen" class="nav-btn">Fullscreen</button>
+          <button id="btn-screenshot" class="nav-btn">Screenshot</button>
+          <a href="/docs" class="nav-btn">Documentation</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notifications"></div>
+
+    <!-- Performance Monitor (Development) -->
+    <div id="performance-monitor" style="display: none;">
+      <canvas id="performance-graph"></canvas>
+    </div>
+
+  </body>
+</html>
