@@ -79,7 +79,6 @@ services:
       - PUTER_JWT_SECRET=${PUTER_JWT_SECRET}
       - PUTER_COOKIE_SECRET=${PUTER_COOKIE_SECRET}
       - NODE_ENV=production
-    restart: unless-stopped
     depends_on:
       - database
       - redis

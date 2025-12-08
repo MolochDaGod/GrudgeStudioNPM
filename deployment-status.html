@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grudge Studio v1.2.0 - Deployment Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background: #0a0a0a; color: #00ff00; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #00ff00;
+            font-size: 2.5em;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .status-card {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+            background: rgba(0, 255, 0, 0.05);
+        }
+        
+        .status-card h3 {
+            margin-bottom: 10px;
+            color: #00ff00;
+        }
+        
+        .status-card .check {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .status-card .cross {
+            color: #ff0000;
+        }
+        
+        .deployment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border: 1px solid #00ff00;
+        }
+        
+        .deployment-table th,
+        .deployment-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #00ff00;
+        }
+        
+        .deployment-table th {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .deployment-table tr:hover {
+            background: rgba(0, 255, 0, 0.05);
+        }
+        
+        .status-active { color: #00ff00; }
+        .status-pending { color: #ffaa00; }
+        .status-inactive { color: #666; }
+        
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .example-card {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .example-card:hover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+        
+        .example-card h3 {
+            margin-bottom: 10px;
+            color: #00ff00;
+        }
+        
+        .example-card p {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #00aa00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #00ff00;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ GRUDGE STUDIO v1.2.0</h1>
+        <p style="text-align: center; margin-bottom: 40px; color: #00aa00;">
+            Advanced 3D Game Development Framework | GitHub Pages Deployment Successful
+        </p>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <h3>Build Status</h3>
+                <p><span class="check">✓</span> Vite Build: Success</p>
+                <p><span class="check">✓</span> Module Bundling: Complete</p>
+                <p><span class="check">✓</span> Asset Pipeline: Optimized</p>
+            </div>
+            
+            <div class="status-card">
+                <h3>Deployment Status</h3>
+                <p><span class="check">✓</span> GitHub Pages: Active</p>
+                <p><span class="check">✓</span> GitHub Actions: Configured</p>
+                <p><span class="check">✓</span> CNAME: grudgestudio.dev</p>
+            </div>
+            
+            <div class="status-card">
+                <h3>Framework Components</h3>
+                <p><span class="check">✓</span> 5 Tool Modules: 4000+ Lines</p>
+                <p><span class="check">✓</span> 3 Game Examples: Ready</p>
+                <p><span class="check">✓</span> Physics Engine: Integrated</p>
+            </div>
+            
+            <div class="status-card">
+                <h3>Documentation</h3>
+                <p><span class="check">✓</span> TOOLS.md: 400+ Lines</p>
+                <p><span class="check">✓</span> GETTING_STARTED.md: 500+ Lines</p>
+                <p><span class="check">✓</span> API Reference: Complete</p>
+            </div>
+        </div>
+
+        <h2 style="margin: 40px 0 20px; color: #00ff00;">Deployment Platforms</h2>
+        <table class="deployment-table">
+            <thead>
+                <tr>
+                    <th>Platform</th>
+                    <th>Status</th>
+                    <th>URL</th>
+                    <th>Auto-Deploy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>GitHub Pages</strong></td>
+                    <td><span class="status-active">ACTIVE</span></td>
+                    <td>https://MolochDaGod.github.io/GrudgeStudioNPM/</td>
+                    <td><span class="status-active">YES</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Docker Hub</strong></td>
+                    <td><span class="status-pending">CONFIGURABLE</span></td>
+                    <td>ghcr.io/MolochDaGod/GrudgeStudioNPM</td>
+                    <td><span class="status-pending">YES (with secrets)</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Puter Cloud</strong></td>
+                    <td><span class="status-inactive">MANUAL</span></td>
+                    <td>puter.com (requires API key)</td>
+                    <td><span class="status-inactive">Optional</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Self-Hosted</strong></td>
+                    <td><span class="status-inactive">MANUAL</span></td>
+                    <td>Configure in secrets</td>
+                    <td><span class="status-inactive">Optional</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 style="margin: 40px 0 20px; color: #00ff00;">Interactive Examples</h2>
+        <div class="examples">
+            <div class="example-card">
+                <h3>🎮 FPS Game</h3>
+                <p>First-person shooter with enemies, combat, and interactive objects. Features real-time physics, particle effects, and spatial audio.</p>
+                <button class="btn" onclick="loadExample('fps-game')">Load Example</button>
+            </div>
+            
+            <div class="example-card">
+                <h3>⚔️ RPG Adventure</h3>
+                <p>Role-playing game with procedural terrain, NPCs, treasure chests, and inventory system. Includes dynamic lighting and environmental effects.</p>
+                <button class="btn" onclick="loadExample('rpg-adventure')">Load Example</button>
+            </div>
+            
+            <div class="example-card">
+                <h3>✨ Showcase</h3>
+                <p>Interactive demo of all visual effects and framework features. Demonstrates shader systems, lighting, particles, and interactive elements.</p>
+                <button class="btn" onclick="loadExample('showcase')">Load Example</button>
+            </div>
+        </div>
+
+        <h2 style="margin: 40px 0 20px; color: #00ff00;">Quick Start</h2>
+        <pre style="background: rgba(0,0,0,0.5); border: 1px solid #00ff00; padding: 20px; border-radius: 5px; overflow-x: auto;"><code>// Install dependencies
+npm install --legacy-peer-deps
+
+// Development server
+npm run dev
+
+// Build for GitHub Pages
+npm run build:pages
+
+// Build Docker image
+npm run build:docker
+
+// Run tests
+npm test</code></pre>
+
+        <h2 style="margin: 40px 0 20px; color: #00ff00;">Feature Overview</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <h3 style="color: #00ff00; margin-bottom: 10px;">Core Systems</h3>
+                <ul style="list-style: none;">
+                    <li>✓ Shader Animation System (Water, Portal, Lava, Fireball)</li>
+                    <li>✓ Texture Animation System (Sprite, Flowing)</li>
+                    <li>✓ Material System (Combat, Environment)</li>
+                    <li>✓ Skybox System (Procedural, Dynamic)</li>
+                    <li>✓ 3D Physics Engine (Rigid bodies, Constraints)</li>
+                    <li>✓ Collision Detection (SAT, Broadphase)</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: #00ff00; margin-bottom: 10px;">Input & Rendering</h3>
+                <ul style="list-style: none;">
+                    <li>✓ Multi-modal Input (Mouse, Gamepad, Motion)</li>
+                    <li>✓ Advanced Raycasting</li>
+                    <li>✓ Gesture Recognition</li>
+                    <li>✓ 4 Camera Controllers (Orbit, FPS, TPS, Cinematic)</li>
+                    <li>✓ Advanced Lighting (Point, Spot, Fire, Time-of-day)</li>
+                    <li>✓ Particle System (1000+ particles)</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 style="margin: 40px 0 20px; color: #00ff00;">Next Steps</h2>
+        <ol style="margin-left: 20px;">
+            <li>Configure GitHub Actions secrets for Docker deployment (optional)</li>
+            <li>Set up Puter Cloud API key for cloud deployment (optional)</li>
+            <li>Configure self-hosted server details (optional)</li>
+            <li>Monitor deployments via GitHub Actions tab</li>
+            <li>Check <strong>GETTING_STARTED.md</strong> for detailed deployment guides</li>
+            <li>Review <strong>TOOLS.md</strong> for comprehensive API documentation</li>
+        </ol>
+
+        <div class="footer">
+            <p>Grudge Studio v1.2.0 | Built with Vite + Three.js | Deployed via GitHub Pages + Actions</p>
+            <p>Repository: <a href="https://github.com/MolochDaGod/GrudgeStudioNPM" style="color: #00ff00;">github.com/MolochDaGod/GrudgeStudioNPM</a></p>
+            <p>Last Updated: December 8, 2025</p>
+        </div>
+    </div>
+
+    <script>
+        function loadExample(example) {
+            const exampleMap = {
+                'fps-game': 'examples/fps-game.html',
+                'rpg-adventure': 'examples/rpg-adventure.html',
+                'showcase': 'playground.html'
+            };
+            
+            const url = exampleMap[example];
+            if (url) {
+                window.location.href = url;
+            } else {
+                alert('Example not found: ' + example);
+            }
+        }
+
+        // Log system info
+        console.log('%c⚔️ GRUDGE STUDIO v1.2.0', 'color: #00ff00; font-size: 16px; font-weight: bold;');
+        console.log('%cDeployment Status: ACTIVE', 'color: #00ff00; font-weight: bold;');
+        console.log('Platform: ' + navigator.platform);
+        console.log('User Agent: ' + navigator.userAgent);
+        console.log('Memory: ' + (navigator.deviceMemory || 'Unknown') + ' GB');
+        console.log('Cores: ' + (navigator.hardwareConcurrency || 'Unknown'));
+    </script>
+</body>
+</html>

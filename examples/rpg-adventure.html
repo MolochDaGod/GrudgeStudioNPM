@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Adventure - Grudge Studio v1.2.0</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { width: 100%; height: 100vh; overflow: hidden; background: #000; }
+        canvas { display: block; width: 100%; height: 100%; }
+        
+        #ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            min-width: 250px;
+            z-index: 100;
+        }
+        
+        #ui h3 { margin-bottom: 8px; font-size: 14px; }
+        #ui .stat { margin-bottom: 5px; display: flex; justify-content: space-between; }
+        #ui .stat-label { flex: 1; }
+        #ui .stat-value { font-weight: bold; color: #00ff00; }
+        
+        .inventory {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            max-width: 200px;
+            z-index: 100;
+        }
+        
+        .inventory h3 { margin-bottom: 10px; }
+        .inventory-item { padding: 5px; margin-bottom: 5px; background: rgba(0, 255, 0, 0.1); border-left: 2px solid #0f0; }
+        
+        .info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            max-width: 300px;
+            z-index: 100;
+        }
+        
+        .info h3 { margin-bottom: 10px; }
+        .info-text { font-size: 11px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <canvas class="webgl"></canvas>
+    
+    <div class="info">
+        <h3>⚔️ RPG ADVENTURE</h3>
+        <div class="info-text">
+            Explore the procedural world.<br>
+            Find treasure chests.<br>
+            Interact with NPCs.<br><br>
+            Controls:<br>
+            WASD - Move<br>
+            Mouse - Look/Rotate<br>
+            E - Interact<br>
+            Scroll - Zoom
+        </div>
+    </div>
+    
+    <div class="inventory">
+        <h3>📦 Inventory</h3>
+        <div class="inventory-item">Gold: <strong>0</strong></div>
+        <div class="inventory-item">Items: <strong>0</strong></div>
+        <div class="inventory-item">Treasures: <strong>0</strong></div>
+    </div>
+    
+    <div id="ui">
+        <h3>Character Stats</h3>
+        <div class="stat">
+            <span class="stat-label">Health:</span>
+            <span class="stat-value"><span id="health">100</span>/100</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Level:</span>
+            <span class="stat-value"><span id="level">1</span></span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Experience:</span>
+            <span class="stat-value"><span id="exp">0</span>/100</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Location:</span>
+            <span class="stat-value"><span id="location">Forest</span></span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">FPS:</span>
+            <span class="stat-value"><span id="fps">60</span></span>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { SimplexNoise } from 'https://cdn.jsdelivr.net/npm/simplex-noise@3.0.0/dist/simplex-noise.js';
+        
+        const canvas = document.querySelector('.webgl');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87ceeb);
+        scene.fog = new THREE.Fog(0x87ceeb, 200, 500);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(100, 100, 50);
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.left = -200;
+        directionalLight.shadow.camera.right = 200;
+        directionalLight.shadow.camera.top = 200;
+        directionalLight.shadow.camera.bottom = -200;
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+        
+        // Procedural terrain
+        const noise = new SimplexNoise();
+        const terrainSize = 200;
+        const terrainSegments = 64;
+        
+        const geometry = new THREE.PlaneGeometry(terrainSize, terrainSize, terrainSegments, terrainSegments);
+        const positions = geometry.attributes.position;
+        
+        for (let i = 0; i < positions.count; i++) {
+            const x = positions.getX(i);
+            const z = positions.getZ(i);
+            const height = noise.noise2D(x * 0.05, z * 0.05) * 15;
+            positions.setY(i, height);
+        }
+        
+        geometry.computeVertexNormals();
+        
+        const terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x2d5016 });
+        const terrain = new THREE.Mesh(geometry, terrainMaterial);
+        terrain.rotation.x = -Math.PI / 2;
+        terrain.receiveShadow = true;
+        terrain.castShadow = true;
+        scene.add(terrain);
+        
+        // Player
+        const playerGeometry = new THREE.CapsuleGeometry(0.5, 1.7, 4, 8);
+        const playerMaterial = new THREE.MeshStandardMaterial({ color: 0x4488ff });
+        const player = new THREE.Mesh(playerGeometry, playerMaterial);
+        player.position.y = 30;
+        player.castShadow = true;
+        player.receiveShadow = true;
+        scene.add(player);
+        
+        camera.position.set(0, 35, 0);
+        
+        // Create NPCs
+        const npcs = [];
+        for (let i = 0; i < 3; i++) {
+            const npcGeometry = new THREE.CapsuleGeometry(0.4, 1.5, 4, 8);
+            const npcMaterial = new THREE.MeshStandardMaterial({ color: Math.random() < 0.5 ? 0xff8800 : 0xff00ff });
+            const npc = new THREE.Mesh(npcGeometry, npcMaterial);
+            
+            npc.position.x = (Math.random() - 0.5) * 150;
+            npc.position.z = (Math.random() - 0.5) * 150;
+            npc.position.y = 30;
+            npc.castShadow = true;
+            
+            npcs.push({
+                mesh: npc,
+                name: ['Elder', 'Merchant', 'Guard'][i],
+                dialog: ['Greetings, traveler!', 'Have you come to trade?', 'Watch out for dangers ahead!'][i]
+            });
+            
+            scene.add(npc);
+        }
+        
+        // Create treasure chests
+        const treasures = [];
+        for (let i = 0; i < 5; i++) {
+            const chestGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const chestMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
+            const chest = new THREE.Mesh(chestGeometry, chestMaterial);
+            
+            chest.position.x = (Math.random() - 0.5) * 150;
+            chest.position.z = (Math.random() - 0.5) * 150;
+            chest.position.y = 30;
+            chest.castShadow = true;
+            
+            treasures.push({
+                mesh: chest,
+                gold: Math.floor(Math.random() * 100) + 50,
+                collected: false
+            });
+            
+            scene.add(chest);
+        }
+        
+        // Player state
+        let playerVelocity = new THREE.Vector3();
+        let playerHealth = 100;
+        let level = 1;
+        let experience = 0;
+        let goldCollected = 0;
+        
+        // Input
+        const keys = {};
+        window.addEventListener('keydown', (e) => { keys[e.key] = true; });
+        window.addEventListener('keyup', (e) => { keys[e.key] = false; });
+        
+        // Camera controls
+        let yaw = 0;
+        let pitch = 0;
+        document.addEventListener('mousemove', (e) => {
+            yaw -= e.movementX * 0.002;
+            pitch -= e.movementY * 0.002;
+            pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+        });
+        
+        // Game loop
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const deltaTime = Math.min(clock.getDelta(), 0.016);
+            
+            // Player movement
+            let moveDirection = new THREE.Vector3();
+            if (keys['w'] || keys['W']) moveDirection.z -= 1;
+            if (keys['s'] || keys['S']) moveDirection.z += 1;
+            if (keys['a'] || keys['A']) moveDirection.x -= 1;
+            if (keys['d'] || keys['D']) moveDirection.x += 1;
+            
+            if (moveDirection.length() > 0) {
+                moveDirection.normalize();
+                const rotationMatrix = new THREE.Matrix4();
+                rotationMatrix.makeRotationY(yaw);
+                moveDirection.applyMatrix4(rotationMatrix);
+                player.position.addScaledVector(moveDirection, 20 * deltaTime);
+            }
+            
+            // Camera follows player
+            camera.position.copy(player.position);
+            camera.position.y += 1.6;
+            
+            // Update camera rotation
+            camera.quaternion.setFromEuler(new THREE.Euler(pitch, yaw, 0, 'YXZ'));
+            
+            // Check treasure collision
+            for (let treasure of treasures) {
+                if (!treasure.collected) {
+                    const distance = player.position.distanceTo(treasure.mesh.position);
+                    if (distance < 3) {
+                        goldCollected += treasure.gold;
+                        experience += 10;
+                        scene.remove(treasure.mesh);
+                        treasure.collected = true;
+                    }
+                }
+            }
+            
+            // Update UI
+            document.getElementById('health').textContent = playerHealth;
+            document.getElementById('level').textContent = level;
+            document.getElementById('exp').textContent = Math.min(experience, 100);
+            document.getElementById('fps').textContent = Math.round(1 / deltaTime);
+            
+            if (experience >= 100) {
+                level++;
+                experience = 0;
+            }
+            
+            // Update inventory
+            document.querySelector('.inventory-item:nth-child(2)').innerHTML = `Gold: <strong>${goldCollected}</strong>`;
+            document.querySelector('.inventory-item:nth-child(3)').innerHTML = `Items: <strong>${Math.floor(goldCollected / 50)}</strong>`;
+            document.querySelector('.inventory-item:nth-child(4)').innerHTML = `Treasures: <strong>${treasures.filter(t => t.collected).length}</strong>`;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
