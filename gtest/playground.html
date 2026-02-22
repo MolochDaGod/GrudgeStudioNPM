@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GRUDGE Studio - Editor Playground</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <script type="module" crossorigin src="/assets/playground-BTkna7FG.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/assets/OrbitControls-BM5tREKB.js">
+    <link rel="modulepreload" crossorigin href="/assets/TransformControls-BqcytDZ_.js">
+    <link rel="stylesheet" crossorigin href="/assets/playground-C2vOLUJV.css">
+  </head>
+  <body>
+    <canvas class="webgl"></canvas>
+    
+    <div id="editor-toolbar-container"></div>
+    <div id="asset-palette-container" class="asset-palette"></div>
+    
+    <div id="playground-ui">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <button id="tool-select" class="tool-btn active" title="Select (V)">
+            <span>⬚</span>
+          </button>
+          <button id="tool-move" class="tool-btn" title="Move (G)">
+            <span>↔</span>
+          </button>
+          <button id="tool-rotate" class="tool-btn" title="Rotate (R)">
+            <span>⟲</span>
+          </button>
+          <button id="tool-scale" class="tool-btn" title="Scale (S)">
+            <span>⤢</span>
+          </button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+          <button id="tool-sculpt" class="tool-btn" title="Terrain Sculpt (B)">
+            <span>🏔️</span>
+          </button>
+          <button id="tool-place" class="tool-btn" title="Place Assets (P)">
+            <span>🌲</span>
+          </button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+          <button id="tool-spawn" class="tool-btn" title="Add Spawn Point">
+            <span>📍</span>
+          </button>
+          <button id="tool-navmesh" class="tool-btn" title="Show NavMesh">
+            <span>🗺️</span>
+          </button>
+          <button id="tool-path" class="tool-btn" title="Test Pathfinding">
+            <span>🧭</span>
+          </button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+          <button id="tool-play" class="tool-btn" title="Play Mode">
+            <span>▶️</span>
+          </button>
+          <button id="tool-camera" class="tool-btn" title="Toggle Chase Camera">
+            <span>🎥</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <h3>Scene Hierarchy</h3>
+          <div id="scene-tree" class="tree-view"></div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3>Inspector</h3>
+          <div id="inspector" class="inspector-panel">
+            <p class="placeholder">Select an object to inspect</p>
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3>Layers</h3>
+          <div class="layer-list">
+            <label class="layer-item">
+              <input type="checkbox" id="layer-ground" checked>
+              <span>Ground</span>
+            </label>
+            <label class="layer-item">
+              <input type="checkbox" id="layer-walls" checked>
+              <span>Walls</span>
+            </label>
+            <label class="layer-item">
+              <input type="checkbox" id="layer-obstacles" checked>
+              <span>Obstacles</span>
+            </label>
+            <label class="layer-item">
+              <input type="checkbox" id="layer-spawns" checked>
+              <span>Spawn Points</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3>AI Navigation</h3>
+          <div class="ai-nav-controls">
+            <button id="btn-generate-nav" class="control-btn">Generate NavMesh</button>
+            <button id="btn-test-ai" class="control-btn">Test AI Agent</button>
+            <button id="btn-ai-help" class="control-btn ai-btn">🤖 Ask AI</button>
+          </div>
+        </div>
+        
+        <div class="sidebar-section" id="terrain-section">
+          <h3>Terrain</h3>
+          <div class="terrain-controls">
+            <div class="control-row">
+              <label>Width</label>
+              <input type="number" id="terrain-width" value="50" min="10" max="200">
+            </div>
+            <div class="control-row">
+              <label>Depth</label>
+              <input type="number" id="terrain-depth" value="50" min="10" max="200">
+            </div>
+            <div class="control-row">
+              <label>Max Height</label>
+              <input type="number" id="terrain-height" value="10" min="1" max="50">
+            </div>
+            <button id="btn-generate-terrain" class="control-btn">Generate Terrain</button>
+            <button id="btn-flatten-terrain" class="control-btn">Flatten</button>
+          </div>
+        </div>
+        
+        <div id="environment-panel-container" class="sidebar-section"></div>
+        <div id="scene-picker-container" class="sidebar-section"></div>
+      </div>
+      
+      <div class="bottom-bar">
+        <div class="info-section">
+          <span id="tool-mode">Mode: Select</span>
+          <span id="object-count">Objects: 0</span>
+          <span id="fps-counter">FPS: 0</span>
+        </div>
+        <div class="controls-info">
+          <span>LMB: Select</span>
+          <span>RMB: Context Menu</span>
+          <span>G/R/S: Transform</span>
+          <span>F: Focus</span>
+          <span>Del: Delete</span>
+        </div>
+      </div>
+      
+      <a href="/" class="back-link">← Back to Game</a>
+    </div>
+    
+    <div id="ai-chat-panel" class="ai-chat-panel hidden">
+      <div class="ai-chat-header">
+        <span>🤖 AI Assistant</span>
+        <button id="close-ai-chat" class="close-btn">×</button>
+      </div>
+      <div id="ai-chat-messages" class="ai-chat-messages"></div>
+      <div class="ai-chat-input">
+        <input type="text" id="ai-chat-input" placeholder="Ask about pathfinding, spawns, terrain...">
+        <button id="ai-chat-send">Send</button>
+      </div>
+    </div>
+    
+  </body>
+</html>

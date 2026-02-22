@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grudge Studio - 3D Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+      border-bottom: 1px solid #0f3460;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #eee;
+    }
+    
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .nav-links a {
+      color: #aaa;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    
+    .main-content {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+    
+    .sidebar {
+      width: 280px;
+      background: #16213e;
+      border-right: 1px solid #0f3460;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    
+    .sidebar h3 {
+      font-size: 0.875rem;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    
+    .model-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .model-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .model-item:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .model-item.active {
+      background: rgba(233, 69, 96, 0.2);
+      border: 1px solid #e94560;
+    }
+    
+    .model-icon {
+      width: 40px;
+      height: 40px;
+      background: #0f3460;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .model-info {
+      flex: 1;
+    }
+    
+    .model-name {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+    
+    .model-meta {
+      font-size: 0.75rem;
+      color: #888;
+    }
+    
+    .viewer-container {
+      flex: 1;
+      position: relative;
+      background: #0a0a1a;
+    }
+    
+    #viewer {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .dropzone {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 10, 26, 0.95);
+      z-index: 10;
+      transition: all 0.3s;
+    }
+    
+    .dropzone.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .dropzone.dragover {
+      background: rgba(233, 69, 96, 0.1);
+      border: 2px dashed #e94560;
+    }
+    
+    .dropzone-content {
+      text-align: center;
+    }
+    
+    .dropzone-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+    
+    .dropzone-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .dropzone-subtitle {
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    
+    .open-btn {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .open-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(233, 69, 96, 0.3);
+    }
+    
+    .formats {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #666;
+    }
+    
+    .controls-panel {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(22, 33, 62, 0.9);
+      padding: 0.5rem;
+      border-radius: 8px;
+      z-index: 5;
+    }
+    
+    .control-btn {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    
+    .control-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .control-btn.active {
+      background: rgba(233, 69, 96, 0.4);
+      border: 1px solid #e94560;
+    }
+    
+    .info-panel {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(22, 33, 62, 0.9);
+      padding: 1rem;
+      border-radius: 8px;
+      min-width: 200px;
+      z-index: 5;
+      display: none;
+    }
+    
+    .info-panel.visible {
+      display: block;
+    }
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .info-label {
+      color: #888;
+    }
+    
+    .animation-panel {
+      position: absolute;
+      bottom: 4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(22, 33, 62, 0.9);
+      padding: 1rem;
+      border-radius: 8px;
+      z-index: 5;
+      display: none;
+    }
+    
+    .animation-panel.visible {
+      display: block;
+    }
+    
+    .animation-select {
+      background: #0f3460;
+      color: #fff;
+      border: 1px solid #1a1a2e;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      min-width: 200px;
+    }
+    
+    #file-input {
+      display: none;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/viewer-Dzv_SAAw.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/OrbitControls-BM5tREKB.js">
+  <link rel="modulepreload" crossorigin href="/assets/OBJLoader-T3R-nVsm.js">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a href="/" class="logo">
+        <div class="logo-icon">G</div>
+        <span class="logo-text">Grudge Studio Viewer</span>
+      </a>
+      <nav class="nav-links">
+        <a href="/">Arena Game</a>
+        <a href="/playground.html">Playground</a>
+        <a href="/viewer.html">3D Viewer</a>
+      </nav>
+    </header>
+    
+    <div class="main-content">
+      <aside class="sidebar">
+        <h3>Project Models</h3>
+        <div class="model-list" id="model-list">
+          <div class="model-item" data-model="/attached_assets/fps_shooter_game_arena_map_v3_1764916438142.glb">
+            <div class="model-icon">🏟️</div>
+            <div class="model-info">
+              <div class="model-name">Arena Map</div>
+              <div class="model-meta">GLB • Arena Environment</div>
+            </div>
+          </div>
+          <div class="model-item" data-model="/attached_assets/uploads_files_3852717_Gladiator_1765184552888.glb">
+            <div class="model-icon">⚔️</div>
+            <div class="model-info">
+              <div class="model-name">Gladiator</div>
+              <div class="model-meta">GLB • Character</div>
+            </div>
+          </div>
+        </div>
+        
+        <h3 style="margin-top: 1.5rem;">Animation Clips</h3>
+        <div id="animation-list" class="model-list"></div>
+      </aside>
+      
+      <div class="viewer-container">
+        <div id="viewer"></div>
+        
+        <div class="dropzone" id="dropzone">
+          <div class="dropzone-content">
+            <div class="dropzone-icon">📦</div>
+            <h2 class="dropzone-title">Drop 3D Model Here</h2>
+            <p class="dropzone-subtitle">Or click the button below to browse</p>
+            <button class="open-btn" id="open-btn">Open 3D Model</button>
+            <p class="formats">Supports: GLB, GLTF, OBJ, FBX, STL, 3DS, DAE, PLY</p>
+          </div>
+        </div>
+        
+        <div class="info-panel" id="info-panel">
+          <div class="info-row">
+            <span class="info-label">Meshes:</span>
+            <span id="mesh-count">0</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Vertices:</span>
+            <span id="vertex-count">0</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Triangles:</span>
+            <span id="triangle-count">0</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Animations:</span>
+            <span id="animation-count">0</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Bones:</span>
+            <span id="bone-count">0</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Skinned Meshes:</span>
+            <span id="skinned-mesh-count">0</span>
+          </div>
+        </div>
+        
+        <div class="animation-panel" id="animation-panel">
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; min-width: 320px;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <select class="animation-select" id="animation-select" style="flex: 1;">
+                <option value="">Select Animation</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button class="control-btn" id="btn-play-pause" style="width: 36px; height: 36px;">⏸️</button>
+              <input type="range" id="animation-timeline" min="0" max="100" value="0" style="flex: 1; accent-color: #e94560;">
+              <span id="animation-time" style="font-size: 0.75rem; min-width: 90px; text-align: right;">0.00s / 0.00s</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button class="control-btn" id="btn-speed-down" style="width: 32px; height: 32px; font-size: 0.75rem;">-</button>
+                <span id="speed-display" style="font-size: 0.875rem; min-width: 50px; text-align: center;">1.00x</span>
+                <button class="control-btn" id="btn-speed-up" style="width: 32px; height: 32px; font-size: 0.75rem;">+</button>
+              </div>
+              <div style="font-size: 0.75rem; color: #888;">
+                <span id="current-animation">No animation</span> - <span id="animation-duration">0.00s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="controls-panel">
+          <button class="control-btn" id="btn-reset" title="Reset View">🔄</button>
+          <button class="control-btn" id="btn-wireframe" title="Toggle Wireframe">🔲</button>
+          <button class="control-btn" id="btn-grid" title="Toggle Grid">📐</button>
+          <button class="control-btn" id="btn-skeleton" title="Show Skeleton">🦴</button>
+          <button class="control-btn" id="btn-info" title="Model Info">ℹ️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <input type="file" id="file-input" accept=".glb,.gltf,.obj,.fbx,.stl,.3ds,.dae,.ply" multiple>
+  
+</body>
+</html>

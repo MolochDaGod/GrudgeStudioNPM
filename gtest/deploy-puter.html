@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy to Puter - Grudge Arena</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f1629 0%, #1a1f3a 100%);
+            min-height: 100vh;
+            color: #e8eaf6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(20, 26, 43, 0.95);
+            border-radius: 16px;
+            border: 1px solid #2a3150;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #6ee7b7;
+        }
+        .subtitle {
+            color: #a5b4d0;
+            margin-bottom: 30px;
+        }
+        .config-section {
+            background: rgba(42, 49, 80, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .config-section h3 {
+            font-size: 14px;
+            color: #6ee7b7;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .config-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(42, 49, 80, 0.5);
+        }
+        .config-row:last-child { border-bottom: none; }
+        .config-label { color: #a5b4d0; }
+        .config-value { color: #e8eaf6; font-family: monospace; }
+        .config-value a { color: #6ee7b7; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(42, 49, 80, 0.6);
+            border: 1px solid #2a3150;
+            border-radius: 8px;
+            color: #e8eaf6;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #6ee7b7;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6ee7b7, #3b82f6);
+            color: #0f1629;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(110, 231, 183, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-secondary {
+            background: rgba(42, 49, 80, 0.6);
+            color: #e8eaf6;
+            border: 1px solid #2a3150;
+        }
+        .btn-secondary:hover {
+            border-color: #6ee7b7;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status.info {
+            display: block;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+        }
+        .status.success {
+            display: block;
+            background: rgba(110, 231, 183, 0.2);
+            border: 1px solid #6ee7b7;
+        }
+        .status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+        .progress {
+            height: 4px;
+            background: rgba(42, 49, 80, 0.6);
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .log {
+            margin-top: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            padding: 4px 0;
+            color: #a5b4d0;
+        }
+        .log-entry.success { color: #6ee7b7; }
+        .log-entry.error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Deploy to Puter</h1>
+        <p class="subtitle">Push Grudge Arena updates to your Puter site</p>
+
+        <div class="config-section">
+            <h3>Current Configuration</h3>
+            <div class="config-row">
+                <span class="config-label">Site Name</span>
+                <span class="config-value">GRUDA CODE</span>
+            </div>
+            <div class="config-row">
+                <span class="config-label">Subdomain</span>
+                <span class="config-value">gruda-code</span>
+            </div>
+            <div class="config-row">
+                <span class="config-label">Live URL</span>
+                <span class="config-value"><a href="https://gruda-code-4zwtk.puter.site" target="_blank">gruda-code-4zwtk.puter.site</a></span>
+            </div>
+            <div class="config-row">
+                <span class="config-label">App ID</span>
+                <span class="config-value" style="font-size: 10px;">app-d563ec46-ba85-4cdb-82ff-3aad2916061e</span>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h3>Deploy Settings</h3>
+            <label style="display: block; color: #a5b4d0; margin-bottom: 8px; font-size: 13px;">Target Directory on Puter</label>
+            <input type="text" id="targetDir" value="grudge-arena" placeholder="Directory name on Puter">
+            
+            <label style="display: block; color: #a5b4d0; margin-bottom: 8px; font-size: 13px;">Subdomain</label>
+            <input type="text" id="subdomain" value="gruda-code" placeholder="Your puter.site subdomain">
+        </div>
+
+        <button class="btn btn-primary" id="deployBtn" onclick="deployToPuter()">
+            Deploy to Puter
+        </button>
+        
+        <button class="btn btn-secondary" onclick="checkAuth()">
+            Check Puter Connection
+        </button>
+
+        <div class="status" id="status"></div>
+        
+        <div class="progress" id="progressContainer" style="display: none;">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="log" id="log" style="display: none;"></div>
+    </div>
+
+    <script>
+        const DEPLOY_FILES = [
+            'index.html',
+            'playground.html',
+            'character-builder.html',
+            'skill-tree.html',
+            'viewer.html'
+        ];
+
+        const DEPLOY_DIRS = [
+            'dist',
+            'public'
+        ];
+
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            logEl.style.display = 'block';
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function setStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+
+        function setProgress(percent) {
+            const container = document.getElementById('progressContainer');
+            const bar = document.getElementById('progressBar');
+            container.style.display = 'block';
+            bar.style.width = `${percent}%`;
+        }
+
+        async function checkAuth() {
+            try {
+                setStatus('Checking Puter connection...', 'info');
+                
+                if (typeof puter === 'undefined') {
+                    setStatus('Puter SDK not loaded. Please refresh the page.', 'error');
+                    return false;
+                }
+
+                const user = await puter.auth.getUser();
+                if (user) {
+                    setStatus(`Connected as: ${user.username}`, 'success');
+                    log(`Authenticated as ${user.username}`, 'success');
+                    return true;
+                } else {
+                    setStatus('Not signed in. Click to sign in to Puter.', 'info');
+                    await puter.auth.signIn();
+                    return await checkAuth();
+                }
+            } catch (error) {
+                setStatus(`Auth error: ${error.message}`, 'error');
+                log(`Auth error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function fetchDistFiles() {
+            const files = [];
+            
+            try {
+                const indexResp = await fetch('/dist/index.html');
+                if (indexResp.ok) {
+                    files.push({ path: 'index.html', content: await indexResp.text() });
+                }
+            } catch (e) {
+                log('dist/index.html not found, will use root files', 'info');
+            }
+
+            for (const file of DEPLOY_FILES) {
+                try {
+                    const resp = await fetch(`/${file}`);
+                    if (resp.ok) {
+                        files.push({ path: file, content: await resp.text() });
+                    }
+                } catch (e) {
+                    log(`Skipping ${file}: not found`, 'info');
+                }
+            }
+
+            return files;
+        }
+
+        async function deployToPuter() {
+            const deployBtn = document.getElementById('deployBtn');
+            deployBtn.disabled = true;
+            document.getElementById('log').innerHTML = '';
+            
+            try {
+                const authed = await checkAuth();
+                if (!authed) {
+                    deployBtn.disabled = false;
+                    return;
+                }
+
+                const targetDir = document.getElementById('targetDir').value || 'grudge-arena';
+                const subdomain = document.getElementById('subdomain').value || 'gruda-code';
+
+                log('Starting deployment...', 'info');
+                setStatus('Preparing files...', 'info');
+                setProgress(10);
+
+                try {
+                    await puter.fs.mkdir(targetDir);
+                    log(`Created directory: ${targetDir}`, 'success');
+                } catch (e) {
+                    log(`Directory exists or created: ${targetDir}`, 'info');
+                }
+
+                setProgress(20);
+                log('Fetching build files...', 'info');
+
+                const filesToDeploy = await fetchDistFiles();
+                
+                if (filesToDeploy.length === 0) {
+                    setStatus('No files found to deploy. Run npm run build first.', 'error');
+                    deployBtn.disabled = false;
+                    return;
+                }
+
+                log(`Found ${filesToDeploy.length} files to deploy`, 'info');
+                setProgress(30);
+
+                let uploaded = 0;
+                for (const file of filesToDeploy) {
+                    try {
+                        await puter.fs.write(`${targetDir}/${file.path}`, file.content);
+                        uploaded++;
+                        log(`Uploaded: ${file.path}`, 'success');
+                        setProgress(30 + (uploaded / filesToDeploy.length) * 50);
+                    } catch (e) {
+                        log(`Failed to upload ${file.path}: ${e.message}`, 'error');
+                    }
+                }
+
+                setProgress(85);
+                log('Creating/updating site...', 'info');
+
+                try {
+                    const existingSites = await puter.hosting.list();
+                    const existing = existingSites.find(s => s.subdomain === subdomain);
+                    
+                    if (existing) {
+                        await puter.hosting.delete(subdomain);
+                        log('Removed old deployment', 'info');
+                    }
+                } catch (e) {
+                    log('No existing site to update', 'info');
+                }
+
+                const site = await puter.hosting.create(subdomain, targetDir);
+                setProgress(100);
+
+                const siteUrl = `https://${site.subdomain}.puter.site`;
+                setStatus(`Deployed successfully! Live at: ${siteUrl}`, 'success');
+                log(`Site live at: ${siteUrl}`, 'success');
+
+                setTimeout(() => {
+                    if (confirm(`Deployment complete! Open ${siteUrl}?`)) {
+                        window.open(siteUrl, '_blank');
+                    }
+                }, 500);
+
+            } catch (error) {
+                setStatus(`Deployment failed: ${error.message}`, 'error');
+                log(`Error: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                deployBtn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            log('Puter Deploy Tool ready', 'info');
+            log('Click "Check Puter Connection" to verify authentication', 'info');
+        });
+    </script>
+</body>
+</html>

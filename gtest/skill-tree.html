@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Grudge Warlords - Skill Tree</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Jost:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b1020;
+            --card: #141a2b;
+            --text: #e8eaf6;
+            --muted: #a5b4d0;
+            --border: #2a3150;
+            --accent: #6ee7b7;
+            --gold: #ffd700;
+            --locked: #4a4a4a;
+            --warrior: #ef4444;
+            --mage: #8b5cf6;
+            --worg: #d97706;
+            --ranger: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)),
+                        url('/img/background/grass-ancient.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .font-cinzel { font-family: 'Cinzel', serif; }
+
+        header {
+            background: linear-gradient(135deg, rgba(14,22,48,0.9), rgba(20,26,43,0.7));
+            border-bottom: 2px solid var(--border);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        header h1 { font-size: 1.5rem; color: var(--accent); }
+        header .subtitle { color: var(--muted); font-size: 0.85rem; }
+
+        .back-btn {
+            padding: 8px 16px;
+            background: var(--border);
+            border: none;
+            border-radius: 6px;
+            color: var(--text);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover { background: #3a4560; }
+
+        .class-tabs {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 99;
+            background: rgba(20, 26, 43, 0.95);
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .class-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .class-tab:hover { border-color: var(--accent); color: var(--text); }
+        .class-tab.active { background: rgba(110, 231, 183, 0.15); border-color: var(--accent); color: var(--accent); }
+        .class-tab.warrior.active { background: rgba(239, 68, 68, 0.15); border-color: var(--warrior); color: var(--warrior); }
+        .class-tab.mage.active { background: rgba(139, 92, 246, 0.15); border-color: var(--mage); color: var(--mage); }
+        .class-tab.worg.active { background: rgba(217, 119, 6, 0.15); border-color: var(--worg); color: var(--worg); }
+        .class-tab.ranger.active { background: rgba(34, 197, 94, 0.15); border-color: var(--ranger); color: var(--ranger); }
+
+        .class-icon { font-size: 1.2rem; }
+
+        .skill-tree-container {
+            position: fixed;
+            top: 130px;
+            left: 0;
+            right: 300px;
+            bottom: 0;
+            overflow: auto;
+            padding: 40px;
+        }
+
+        .skill-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            min-width: 800px;
+            padding: 40px;
+            padding-left: 120px;
+        }
+
+        .skill-tier {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .skill-tier::before {
+            content: attr(data-tier);
+            position: absolute;
+            left: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .skill-node {
+            width: 70px;
+            height: 70px;
+            background: var(--card);
+            border: 3px solid var(--locked);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .skill-node:hover {
+            transform: scale(1.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .skill-node.unlocked {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .skill-node.unlocked .skill-icon { filter: none; }
+
+        .skill-node.available {
+            border-color: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(110, 231, 183, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(110, 231, 183, 0.6); }
+        }
+
+        .skill-icon {
+            font-size: 28px;
+            filter: grayscale(100%) brightness(0.5);
+            transition: filter 0.3s;
+        }
+
+        .skill-points {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            background: var(--card);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .skill-tooltip {
+            position: fixed;
+            background: rgba(14, 22, 48, 0.98);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 15px;
+            width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s;
+            z-index: 10000;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .skill-tooltip.visible { opacity: 1; visibility: visible; }
+        
+        .skill-node .skill-tooltip { display: none; }
+        #global-tooltip { display: block; }
+
+        .skill-tooltip h3 { color: var(--gold); margin-bottom: 8px; font-size: 1rem; }
+        .skill-tooltip p { color: var(--muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px; }
+        .skill-tooltip .requirement { color: #ef4444; font-size: 0.8rem; }
+        .skill-tooltip .effect { color: var(--accent); font-size: 0.85rem; }
+
+        .stats-panel {
+            position: fixed;
+            right: 20px;
+            top: 130px;
+            width: 260px;
+            background: linear-gradient(135deg, rgba(20,26,43,0.95), rgba(20,26,43,0.85));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stats-panel h2 { color: var(--accent); font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .stat-label { color: var(--muted); }
+        .stat-value { color: var(--gold); font-weight: 600; }
+
+        .skill-points-available {
+            background: rgba(110, 231, 183, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .skill-points-available .label { color: var(--muted); font-size: 0.85rem; }
+        .skill-points-available .value { color: var(--accent); font-size: 1.5rem; font-weight: 700; }
+
+        .reset-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover { background: rgba(239, 68, 68, 0.3); }
+
+        .mode-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .mode-tab {
+            padding: 10px 16px;
+            background: rgba(20, 26, 43, 0.95);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .mode-tab:hover { border-color: var(--accent); color: var(--text); }
+        .mode-tab.active { background: rgba(110, 231, 183, 0.15); border-color: var(--accent); color: var(--accent); }
+        .mode-tab.weapons.active { background: rgba(245, 158, 11, 0.15); border-color: var(--ranger); color: var(--ranger); }
+
+        .custom-tree-btn {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(110, 231, 183, 0.2));
+            border: 2px solid var(--mage);
+            border-radius: 8px;
+            color: var(--mage);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .custom-tree-btn:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+
+        .albion-weapon-tree {
+            display: none;
+            flex-direction: column;
+            gap: 30px;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .albion-weapon-tree.active {
+            display: flex;
+        }
+
+        .action-bar-slots {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .action-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            min-width: 180px;
+        }
+
+        .slot-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .slot-key {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1));
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+        }
+
+        .slot-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .skill-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .skill-option {
+            padding: 12px;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-option:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .skill-option.selected {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.15);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .skill-option.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .skill-option.locked:hover {
+            transform: none;
+            border-color: var(--border);
+        }
+
+        .skill-option-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(42, 49, 80, 0.6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .skill-option-info {
+            flex: 1;
+        }
+
+        .skill-option-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .skill-option-effect {
+            font-size: 0.75rem;
+            color: var(--accent);
+        }
+
+        .skill-option-cost {
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        .equipped-skill {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(110, 231, 183, 0.2), rgba(110, 231, 183, 0.05));
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-height: 100px;
+        }
+
+        .equipped-skill-icon {
+            font-size: 2rem;
+        }
+
+        .equipped-skill-name {
+            font-weight: 600;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .weapon-info-header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(20,26,43,0.95), rgba(20,26,43,0.7));
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .weapon-info-header h2 {
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .weapon-info-header p {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .weapon-skill-panel {
+            display: none;
+        }
+
+        .weapon-skill-panel.active {
+            display: block;
+        }
+
+        .weapon-select {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weapon-card {
+            padding: 15px;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            min-width: 100px;
+            transition: all 0.2s;
+        }
+
+        .weapon-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .weapon-card.selected { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); }
+        .weapon-card .weapon-icon { font-size: 2rem; margin-bottom: 6px; }
+        .weapon-card .weapon-name { font-size: 0.85rem; color: var(--text); }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 { color: var(--accent); margin-bottom: 20px; }
+
+        .modal-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .modal-section label {
+            display: block;
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .modal-section input, .modal-section select, .modal-section textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(42, 49, 80, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .modal-section input:focus, .modal-section select:focus, .modal-section textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .skill-editor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .skill-editor-card {
+            padding: 12px;
+            background: rgba(42, 49, 80, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .skill-editor-card input {
+            margin-bottom: 8px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .modal-btn.primary:hover { background: #5dd8a8; }
+
+        .modal-btn.secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .modal-btn.secondary:hover { background: #3a4560; }
+
+        .add-skill-btn {
+            padding: 10px 15px;
+            background: rgba(110, 231, 183, 0.2);
+            border: 1px dashed var(--accent);
+            border-radius: 6px;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .add-skill-btn:hover { background: rgba(110, 231, 183, 0.3); }
+
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tier-header h4 { color: var(--gold); font-size: 0.9rem; }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+        }
+
+        .remove-btn:hover { color: #ff6b6b; }
+
+        .prefab-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--ranger);
+            border-radius: 10px;
+        }
+
+        .prefab-section h3 { color: var(--ranger); margin-bottom: 12px; font-size: 1rem; }
+
+        .prefab-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .animation-slot {
+            padding: 10px;
+            background: rgba(42, 49, 80, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .animation-slot label { font-size: 0.8rem; margin-bottom: 4px; }
+    </style>
+  <script type="module" crossorigin src="/assets/skillTree-CiW8m2J8.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+</head>
+<body>
+    <header>
+        <a href="/" class="back-btn">← Back to Game</a>
+        <div style="text-align: center;">
+            <h1 class="font-cinzel">Skill Tree</h1>
+            <div class="subtitle" id="class-name">Warrior Class</div>
+        </div>
+        <div style="width: 120px;"></div>
+    </header>
+
+    <div class="class-tabs" id="class-tabs-container">
+        <button class="class-tab warrior active" data-class="warrior">
+            <span class="class-icon">⚔️</span> Warrior
+        </button>
+        <button class="class-tab mage" data-class="mage">
+            <span class="class-icon">🔮</span> Mage Priest
+        </button>
+        <button class="class-tab worg" data-class="worg">
+            <span class="class-icon">🐺</span> Worg
+        </button>
+        <button class="class-tab ranger" data-class="ranger">
+            <span class="class-icon">🏹</span> Ranger
+        </button>
+    </div>
+
+    <div class="class-tabs weapon-skill-panel" id="weapon-tabs-container">
+        <button class="class-tab active" data-weapon="sword">
+            <span class="class-icon">⚔️</span> Sword
+        </button>
+        <button class="class-tab" data-weapon="bow">
+            <span class="class-icon">🏹</span> Bow
+        </button>
+        <button class="class-tab" data-weapon="staff">
+            <span class="class-icon">🪄</span> Staff
+        </button>
+        <button class="class-tab" data-weapon="dagger">
+            <span class="class-icon">🗡️</span> Dagger
+        </button>
+        <button class="class-tab" data-weapon="axe">
+            <span class="class-icon">🪓</span> Axe
+        </button>
+        <button class="class-tab" data-weapon="hammer">
+            <span class="class-icon">🔨</span> Hammer
+        </button>
+    </div>
+
+    <div class="skill-tree-container">
+        <div class="skill-tree" id="skill-tree"></div>
+        <div class="albion-weapon-tree" id="albion-weapon-tree"></div>
+    </div>
+
+    <div class="modal-overlay" id="custom-tree-modal">
+        <div class="modal">
+            <h2 class="font-cinzel">Create Custom Skill Tree</h2>
+            
+            <div class="modal-section">
+                <label>Skill Tree Name</label>
+                <input type="text" id="custom-tree-name" placeholder="e.g. Fire Mage, Berserker, Assassin...">
+            </div>
+
+            <div class="modal-section">
+                <label>Tree Type</label>
+                <select id="custom-tree-type">
+                    <option value="class">Class Skill Tree</option>
+                    <option value="weapon">Weapon Skill Tree</option>
+                    <option value="ability">Ability Tree</option>
+                </select>
+            </div>
+
+            <div class="modal-section">
+                <label>Icon (Emoji)</label>
+                <input type="text" id="custom-tree-icon" placeholder="e.g. 🔥 ⚡ 💀" maxlength="4">
+            </div>
+
+            <div class="modal-section">
+                <label>Color</label>
+                <input type="color" id="custom-tree-color" value="#6ee7b7">
+            </div>
+
+            <div class="modal-section">
+                <label>Background Image URL (optional)</label>
+                <input type="text" id="custom-tree-background" placeholder="https://i.imgur.com/example.png">
+                <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="bg-preset-btn" data-bg="neutral" style="padding: 4px 8px; background: var(--border); border: none; border-radius: 4px; color: var(--text); cursor: pointer; font-size: 0.75rem;">Neutral</button>
+                    <button type="button" class="bg-preset-btn" data-bg="warrior" style="padding: 4px 8px; background: var(--border); border: none; border-radius: 4px; color: var(--text); cursor: pointer; font-size: 0.75rem;">Warrior</button>
+                    <button type="button" class="bg-preset-btn" data-bg="mage" style="padding: 4px 8px; background: var(--border); border: none; border-radius: 4px; color: var(--text); cursor: pointer; font-size: 0.75rem;">Mage</button>
+                    <button type="button" class="bg-preset-btn" data-bg="ranger" style="padding: 4px 8px; background: var(--border); border: none; border-radius: 4px; color: var(--text); cursor: pointer; font-size: 0.75rem;">Ranger</button>
+                    <button type="button" class="bg-preset-btn" data-bg="worg" style="padding: 4px 8px; background: var(--border); border: none; border-radius: 4px; color: var(--text); cursor: pointer; font-size: 0.75rem;">Worg</button>
+                </div>
+            </div>
+
+            <div id="tiers-container">
+                <div class="modal-section tier-section" data-tier="1">
+                    <div class="tier-header">
+                        <h4>Tier 1 - Basics</h4>
+                    </div>
+                    <div class="skill-editor-grid" id="tier-1-skills">
+                        <div class="skill-editor-card">
+                            <input type="text" placeholder="Skill Name" class="skill-name">
+                            <input type="text" placeholder="Icon (emoji)" class="skill-icon" maxlength="4">
+                            <input type="text" placeholder="Effect (e.g. +10% Damage)" class="skill-effect">
+                            <input type="number" placeholder="Max Points" class="skill-max" value="3" min="1" max="5">
+                        </div>
+                    </div>
+                    <button class="add-skill-btn" onclick="addSkillToTier(1)">+ Add Skill</button>
+                </div>
+
+                <div class="modal-section tier-section" data-tier="2">
+                    <div class="tier-header">
+                        <h4>Tier 2 - Combat</h4>
+                    </div>
+                    <div class="skill-editor-grid" id="tier-2-skills"></div>
+                    <button class="add-skill-btn" onclick="addSkillToTier(2)">+ Add Skill</button>
+                </div>
+
+                <div class="modal-section tier-section" data-tier="3">
+                    <div class="tier-header">
+                        <h4>Tier 3 - Mastery</h4>
+                    </div>
+                    <div class="skill-editor-grid" id="tier-3-skills"></div>
+                    <button class="add-skill-btn" onclick="addSkillToTier(3)">+ Add Skill</button>
+                </div>
+
+                <div class="modal-section tier-section" data-tier="4">
+                    <div class="tier-header">
+                        <h4>Tier 4 - Ultimate</h4>
+                    </div>
+                    <div class="skill-editor-grid" id="tier-4-skills"></div>
+                    <button class="add-skill-btn" onclick="addSkillToTier(4)">+ Add Skill</button>
+                </div>
+            </div>
+
+            <div class="prefab-section" id="weapon-prefab-section" style="display: none;">
+                <h3>Weapon Prefab Settings</h3>
+                <div class="modal-section">
+                    <label>Model Path (GLB/GLTF)</label>
+                    <input type="text" id="prefab-model" placeholder="/models/weapons/sword.glb">
+                </div>
+                <div class="modal-section">
+                    <label>Lua Script</label>
+                    <select id="prefab-script">
+                        <option value="">Select Script...</option>
+                        <option value="sword.lua">sword.lua</option>
+                        <option value="bow.lua">bow.lua</option>
+                        <option value="custom">Custom Script</option>
+                    </select>
+                </div>
+                <div class="prefab-grid">
+                    <div class="animation-slot">
+                        <label>Idle Animation</label>
+                        <input type="text" placeholder="idle" class="anim-idle">
+                    </div>
+                    <div class="animation-slot">
+                        <label>Attack 1</label>
+                        <input type="text" placeholder="attack_1" class="anim-attack1">
+                    </div>
+                    <div class="animation-slot">
+                        <label>Attack 2</label>
+                        <input type="text" placeholder="attack_2" class="anim-attack2">
+                    </div>
+                    <div class="animation-slot">
+                        <label>Attack 3</label>
+                        <input type="text" placeholder="attack_3" class="anim-attack3">
+                    </div>
+                    <div class="animation-slot">
+                        <label>Special</label>
+                        <input type="text" placeholder="special" class="anim-special">
+                    </div>
+                    <div class="animation-slot">
+                        <label>Block</label>
+                        <input type="text" placeholder="block" class="anim-block">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="cancel-custom-btn">Cancel</button>
+                <button class="modal-btn primary" id="save-custom-btn">Save Skill Tree</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-panel">
+        <h2 class="font-cinzel">Skill Bonuses</h2>
+        <div id="stat-bonuses">
+            <div class="stat-row">
+                <span class="stat-label">Damage Bonus</span>
+                <span class="stat-value" id="bonus-damage">+0%</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Defense Bonus</span>
+                <span class="stat-value" id="bonus-defense">+0%</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Speed Bonus</span>
+                <span class="stat-value" id="bonus-speed">+0%</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Health Bonus</span>
+                <span class="stat-value" id="bonus-health">+0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Mana Bonus</span>
+                <span class="stat-value" id="bonus-mana">+0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Critical Chance</span>
+                <span class="stat-value" id="bonus-crit">+0%</span>
+            </div>
+        </div>
+        <div class="skill-points-available">
+            <div class="label">Skill Points Available</div>
+            <div class="value" id="points-available">10</div>
+        </div>
+        <button class="reset-btn" id="reset-btn">Reset Skills</button>
+        
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="class">Class Skills</button>
+            <button class="mode-tab weapons" data-mode="weapons">Weapon Skills</button>
+            <button class="custom-tree-btn" id="create-custom-btn">+ Create Custom</button>
+        </div>
+    </div>
+
+</body>
+</html>

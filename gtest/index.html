@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grudge Arena 3D</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <script type="module" crossorigin src="/assets/main-BIgzl3ft.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/assets/OrbitControls-BM5tREKB.js">
+    <link rel="modulepreload" crossorigin href="/assets/StatsUtils-Dj8vluZS.js">
+    <link rel="modulepreload" crossorigin href="/assets/TransformControls-BqcytDZ_.js">
+    <link rel="modulepreload" crossorigin href="/assets/OBJLoader-T3R-nVsm.js">
+    <link rel="stylesheet" crossorigin href="/assets/main-DfcZ9WKe.css">
+  </head>
+  <body>
+    <canvas class="webgl"></canvas>
+    <div id="ui-overlay">
+      <div id="loading-screen" class="screen active">
+        <div class="loading-content">
+          <h1 class="game-title">GRUDGE ARENA</h1>
+          <p class="subtitle">3D Battle Arena</p>
+          <div class="loading-bar">
+            <div class="loading-progress"></div>
+          </div>
+          <p id="loading-status">Loading assets...</p>
+        </div>
+      </div>
+      
+      <div id="menu-screen" class="screen">
+        <div class="menu-content expanded">
+          <h1 class="game-title">GRUDGE ARENA</h1>
+          <p class="subtitle">3D Battle Arena & Game Development SDK</p>
+          
+          <div class="examples-section">
+            <h2 class="section-title">Game Examples</h2>
+            <div class="examples-grid">
+              <div class="example-card primary" id="card-arena">
+                <div class="card-icon">&#9876;</div>
+                <h3>Arena Combat</h3>
+                <p>3D fighting arena with AI opponents, combat system, and skill-based gameplay</p>
+                <button id="btn-arena" class="menu-btn primary">Play Now</button>
+              </div>
+              <div class="example-card" id="card-playground">
+                <div class="card-icon">&#127918;</div>
+                <h3>3D Playground</h3>
+                <p>Interactive showcase of physics, shaders, particles, and camera systems</p>
+                <button id="btn-playground" class="menu-btn">Explore</button>
+              </div>
+              <div class="example-card" id="card-world-builder">
+                <div class="card-icon">&#127959;</div>
+                <h3>World Builder</h3>
+                <p>Visual scene editor with terrain sculpting, object placement, and scripting</p>
+                <button id="btn-world-builder" class="menu-btn">Open Editor</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="examples-section">
+            <h2 class="section-title">SDK Tools</h2>
+            <div class="examples-grid small">
+              <div class="example-card tool" id="card-builder">
+                <div class="card-icon">&#129497;</div>
+                <h3>Character Builder</h3>
+                <p>Create and customize 3D characters with modular parts</p>
+                <button id="btn-builder" class="menu-btn secondary">Open</button>
+              </div>
+              <div class="example-card tool" id="card-skills">
+                <div class="card-icon">&#127793;</div>
+                <h3>Skill Tree Editor</h3>
+                <p>Design character progression with unlockable abilities</p>
+                <button id="btn-skills" class="menu-btn secondary">Open</button>
+              </div>
+              <div class="example-card tool" id="card-viewer">
+                <div class="card-icon">&#128065;</div>
+                <h3>Model Viewer</h3>
+                <p>Preview and inspect 3D models with animation support</p>
+                <button id="btn-viewer" class="menu-btn secondary">Open</button>
+              </div>
+              <div class="example-card tool" id="card-assets">
+                <div class="card-icon">&#128194;</div>
+                <h3>Asset Browser</h3>
+                <p>Browse and manage game assets, textures, and models</p>
+                <button id="btn-assets" class="menu-btn secondary">Open</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="features-section">
+            <h2 class="section-title">Engine Features</h2>
+            <div class="features-list">
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Three.js 3D Rendering</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Rapier 3D Physics</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Combat System</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> AI Opponents</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Procedural Terrain</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Vehicle Physics</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Lua Scripting</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Animation System</div>
+            </div>
+          </div>
+          
+          <div class="controls-hint">
+            <p>WASD - Move | SPACE - Jump | Mouse - Look | TAB - Target Lock</p>
+          </div>
+        </div>
+      </div>
+      
+      <div id="hud" class="screen">
+        <div class="health-bars">
+          <div class="player-health">
+            <span class="player-name">Player 1</span>
+            <div class="health-bar">
+              <div class="health-fill" id="p1-health"></div>
+            </div>
+          </div>
+          <div class="round-info">
+            <span id="round-number">Round 1</span>
+            <span id="round-timer">90</span>
+          </div>
+          <div class="player-health enemy">
+            <span class="player-name">Opponent</span>
+            <div class="health-bar">
+              <div class="health-fill" id="p2-health"></div>
+            </div>
+          </div>
+        </div>
+        <div class="match-score">
+          <span id="p1-score">0</span>
+          <span class="separator">-</span>
+          <span id="p2-score">0</span>
+        </div>
+        <div id="target-indicator" class="target-indicator hidden">
+          <span>TARGET LOCKED</span>
+        </div>
+        <div id="camera-mode" class="camera-mode hidden">Third Person</div>
+        
+        <div class="controls-panel-left">
+          <div class="controls-section">
+            <div class="controls-header">Movement</div>
+            <div class="control-item"><kbd>W</kbd> Forward</div>
+            <div class="control-item"><kbd>S</kbd> Back</div>
+            <div class="control-item"><kbd>A</kbd> Left</div>
+            <div class="control-item"><kbd>D</kbd> Right</div>
+            <div class="control-item"><kbd>SPACE</kbd> Jump</div>
+            <div class="control-item"><kbd>SHIFT</kbd> Run</div>
+          </div>
+          <div class="controls-section">
+            <div class="controls-header">Combat</div>
+            <div class="control-item"><kbd>LMB</kbd> Light Attack</div>
+            <div class="control-item"><kbd>RMB</kbd> Heavy Attack</div>
+            <div class="control-item"><kbd>TAB</kbd> Lock Target</div>
+          </div>
+          <div class="controls-section">
+            <div class="controls-header">Camera</div>
+            <div class="control-item"><kbd>F1</kbd> Third Person</div>
+            <div class="control-item"><kbd>F2</kbd> First Person</div>
+            <div class="control-item"><kbd>F3</kbd> Action Cam</div>
+            <div class="control-item"><kbd>ESC</kbd> Pause</div>
+          </div>
+        </div>
+        
+        <div class="action-bars-container">
+          <div class="action-bar-group">
+            <div class="action-bar-label">Weapon Skills</div>
+            <div id="weapon-action-bar" class="game-action-bar"></div>
+          </div>
+          <div class="action-bar-group">
+            <div class="action-bar-label">Trait Abilities</div>
+            <div id="trait-action-bar" class="game-action-bar"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="round-announcement" class="announcement hidden">
+        <h2 id="announcement-text">FIGHT!</h2>
+      </div>
+      
+      <div id="pause-menu" class="screen">
+        <div class="pause-content">
+          <h2>PAUSED</h2>
+          <button id="btn-resume" class="menu-btn">Resume</button>
+          <button id="btn-quit" class="menu-btn">Quit to Menu</button>
+        </div>
+      </div>
+      
+      <footer id="game-footer" style="position: fixed; bottom: 10px; right: 10px; z-index: 100; opacity: 0.7; font-size: 12px; color: #888;">
+        <a href="https://developer.puter.com" target="_blank" rel="noopener" style="color: #667eea; text-decoration: none;">Powered by Puter</a>
+      </footer>
+    </div>
+  </body>
+</html>
