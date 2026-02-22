@@ -802,10 +802,19 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## 🆘 Support
 
-- **Documentation**: [https://grudge-studio.dev/docs](https://grudge-studio.dev/docs)
-- **Discord**: [Join our community](https://discord.gg/grudge-studio)
+- **Live Game**: [grudgewarlords.com](https://grudgewarlords.com)
+- **Discord**: [Join our community](https://discord.gg/KmAC5aXs84)
 - **Issues**: [GitHub Issues](https://github.com/MolochDaGod/GrudgeStudioNPM/issues)
-- **Email**: support@grudge-studio.dev
+- **Game Data API**: [ObjectStore](https://molochdagod.github.io/ObjectStore)
+
+## 🎮 Live Projects
+
+| Project | URL | Description |
+|---------|-----|-------------|
+| Grudge Warlords | [grudgewarlords.com](https://grudgewarlords.com) | Browser-based souls-like MMO RPG |
+| ObjectStore API | [GitHub Pages](https://molochdagod.github.io/ObjectStore) | Static game data API (weapons, races, classes) |
+| ObjectStore SDK | [grudge-sdk.js](https://molochdagod.github.io/ObjectStore/sdk/grudge-sdk.js) | JavaScript SDK for game data |
+| Arena PvP | [grudgewarlords.com/arena](https://grudgewarlords.com) | Ranked PvP with server-authoritative battles |
 
 ## 🚀 Roadmap
 
