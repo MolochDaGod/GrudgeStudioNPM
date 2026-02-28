@@ -1,210 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Grudge Arena - 3D Playground</title>
-    <link href="/src/styles/playground.css" rel="stylesheet" type="text/css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <canvas class="webgl"></canvas>
-    
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-      <div class="loading-content">
-        <div class="loading-logo">
-          <h1>GRUDGE STUDIO</h1>
-          <p>3D Playground</p>
-        </div>
-        <div class="loading-bar">
-          <div class="loading-progress"></div>
-        </div>
-        <p class="loading-text">Loading assets...</p>
-      </div>
-    </div>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GRUDGE Studio — Engine Playground</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/controls/OrbitControls.js"></script>
+<script>window.OrbitControls=THREE.OrbitControls</script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#0a0a0f;color:#e0e0e0;overflow:hidden;height:100vh}
+canvas#vp{position:fixed;top:0;left:0;z-index:0}
+#ld{position:fixed;inset:0;z-index:999;background:#0a0a0f;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .5s}
+#ld.done{opacity:0;pointer-events:none}#ld h1{font-family:'Cinzel',serif;font-size:2.4rem;background:linear-gradient(135deg,#ff6b35,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.2rem}
+.lb{width:280px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}.lf{height:100%;width:0;background:linear-gradient(90deg,#ff6b35,#ffd700);transition:width .2s}
+#tb{position:fixed;top:0;left:0;right:0;z-index:10;height:42px;background:rgba(10,10,15,.9);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,107,53,.2);display:flex;align-items:center;justify-content:space-between;padding:0 12px}
+#tb h1{font-family:'Cinzel',serif;font-size:.95rem;color:#ff6b35}.st{display:flex;gap:12px;font-size:.68rem;color:#666}.st b{color:#ffd700;font-weight:600}
+.pn{position:fixed;z-index:10;background:rgba(10,10,20,.93);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px;overflow-y:auto;scrollbar-width:thin}
+.pn::-webkit-scrollbar{width:3px}.pn::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+.pn h3{font-family:'Cinzel',serif;font-size:.78rem;color:#ffd700;margin-bottom:7px;letter-spacing:1px}
+.pn h4{font-size:.6rem;color:#ff6b35;margin:7px 0 4px;text-transform:uppercase;letter-spacing:1px}
+#lp{top:50px;left:6px;width:180px;bottom:64px}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.rc{background:rgba(255,255,255,.03);border:2px solid rgba(255,255,255,.06);border-radius:6px;padding:6px 3px;text-align:center;cursor:pointer;transition:all .15s;font-size:.6rem}
+.rc:hover{border-color:rgba(255,107,53,.4)}.rc.a{border-color:#ff6b35;background:rgba(255,107,53,.12)}
+.rc .ic{font-size:1.3rem;display:block;margin-bottom:1px}.rc .nm{font-weight:600;color:#ddd}.rc .ds{font-size:.5rem;color:#777;margin-top:1px}
+.wg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.wb{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:4px;padding:3px 2px;text-align:center;cursor:pointer;font-size:.48rem;color:#999;transition:all .15s}
+.wb:hover{border-color:#ffd700;color:#ffd700}.wb.a{border-color:#ffd700;background:rgba(255,215,0,.1);color:#ffd700}.wb.lk{opacity:.2;cursor:not-allowed}.wb .wi{font-size:.8rem;display:block}
+#rp{top:50px;right:6px;width:200px;bottom:64px}
+.cr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-size:.65rem}.cr label{color:#999;flex:1}
+.tg{width:30px;height:15px;background:rgba(255,255,255,.08);border-radius:8px;cursor:pointer;transition:background .2s;flex-shrink:0;position:relative}
+.tg.on{background:rgba(255,107,53,.5)}.tg::after{content:'';position:absolute;top:2px;left:2px;width:11px;height:11px;background:#fff;border-radius:50%;transition:transform .15s}.tg.on::after{transform:translateX(15px)}
+.sr{margin-bottom:5px}.sr label{display:block;font-size:.58rem;color:#999;margin-bottom:2px}.sr input[type=range]{width:100%;accent-color:#ff6b35;height:3px}.sv{float:right;color:#ffd700;font-size:.55rem}
+.ab{width:100%;padding:4px;background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.25);color:#ff6b35;border-radius:4px;cursor:pointer;font-size:.6rem;margin-bottom:3px;transition:all .15s}
+.ab:hover{background:rgba(255,107,53,.25)}select.as{width:100%;padding:3px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#ddd;border-radius:4px;font-size:.6rem;margin-bottom:4px}
+#hb{position:fixed;bottom:5px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:3px}
+.hs{width:48px;height:48px;background:rgba(10,10,20,.93);border:2px solid rgba(255,255,255,.07);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;transition:all .15s;position:relative}
+.hs:hover{border-color:rgba(255,215,0,.4)}.hs.ac{border-color:#ffd700;background:rgba(255,215,0,.1)}
+.hs .k{position:absolute;top:1px;left:3px;font-size:.48rem;color:#555}.hs .si{font-size:.95rem}.hs .sn{font-size:.42rem;color:#777}.hs.emp{opacity:.3}
+#id{position:fixed;bottom:62px;right:6px;z-index:10;width:200px;background:rgba(10,10,20,.88);border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:5px 7px;font-size:.52rem;font-family:monospace;color:#555;display:none}
+#id.sh{display:block}.ak{color:#ff6b35;font-weight:700}
+.nf{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:100;padding:7px 18px;border-radius:6px;font-size:.72rem;font-weight:500;animation:ni .2s;pointer-events:none}
+.nf.ok{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:#86efac}
+.nf.inf{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+@keyframes ni{from{opacity:0;transform:translateX(-50%) translateY(-6px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
+</head>
+<body>
+<div id="ld"><h1>GRUDGE STUDIO</h1><p style="color:#888;margin-bottom:14px">Engine Playground v2.0</p><div class="lb"><div class="lf" id="lf"></div></div></div>
+<canvas id="vp"></canvas>
+<div id="tb"><h1>GRUDGE STUDIO</h1><div class="st">FPS <b id="fps">0</b> Tris <b id="tri">0</b> Calls <b id="cal">0</b></div>
+<div style="display:flex;gap:5px;align-items:center"><button class="ab" style="width:auto;margin:0;padding:2px 7px" onclick="G.tID()">Input</button><button class="ab" style="width:auto;margin:0;padding:2px 7px" onclick="G.ss()">Snap</button><a href="./" style="color:#555;font-size:.6rem;text-decoration:none">Home</a></div></div>
+<div class="pn" id="lp"><h3>Race / Class</h3><div class="rg" id="rg"></div><h4>Weapons</h4><div class="wg" id="wg"></div><h4>Actions</h4><button class="ab" onclick="G.an('atk')">Attack</button><button class="ab" onclick="G.an('idle')">Idle</button><button class="ab" onclick="G.an('spin')">Spin</button></div>
+<div class="pn" id="rp"><h3>Admin</h3>
+<div class="cr"><label>Wireframe</label><div class="tg" id="tw" onclick="G.tg('w')"></div></div>
+<div class="cr"><label>Shadows</label><div class="tg on" id="ts" onclick="G.tg('s')"></div></div>
+<div class="cr"><label>Grid</label><div class="tg on" id="tgr" onclick="G.tg('g')"></div></div>
+<div class="cr"><label>Hitboxes</label><div class="tg" id="thb" onclick="G.tg('h')"></div></div>
+<h4>Environment</h4><select class="as" onchange="G.sE(this.value)"><option value="forest">Enchanted Forest</option><option value="desert">Desert</option><option value="arctic">Arctic</option><option value="volcanic">Volcanic</option><option value="void">Void</option></select>
+<div class="sr"><label>Time <span class="sv" id="tv">12</span></label><input type="range" min="0" max="24" step=".5" value="12" oninput="G.sT(this.value)"></div>
+<div class="sr"><label>Sun <span class="sv" id="siv">1.0</span></label><input type="range" min="0" max="3" step=".1" value="1" oninput="G.sS(this.value)"></div>
+<div class="sr"><label>Fog <span class="sv" id="fgv">0.02</span></label><input type="range" min="0" max=".1" step=".002" value=".02" oninput="G.sF(this.value)"></div>
+<div class="sr"><label>Scale <span class="sv" id="scv">1.0</span></label><input type="range" min=".2" max="3" step=".1" value="1" oninput="G.sSc(this.value)"></div>
+<h4>Spawn</h4><button class="ab" onclick="G.spN()">Spawn NPC</button><button class="ab" onclick="G.clN()">Clear NPCs</button><button class="ab" onclick="G.wR()">Weapon Rack</button>
+<h4>Camera</h4><select class="as" id="cm" onchange="G.sC(this.value)"><option value="orbit">Orbit</option><option value="shoulder">Shoulder</option><option value="top">Top</option><option value="front">Front</option></select>
+<button class="ab" onclick="G.rC()">Reset Camera</button>
+<h4>ObjectStore</h4><button class="ab" onclick="G.fOS()">Load Game Data</button><div id="oss" style="font-size:.5rem;color:#555;margin-top:2px"></div>
+</div>
+<div id="hb"></div>
+<div id="id"><b style="color:#ffd700">Input</b><div>Keys: <span id="dk">-</span></div><div>Mouse: <span id="dm">0,0</span></div><div>Btns: <span id="db">-</span></div></div>
+<script>
+const R=[
+{id:'warrior',nm:'Warrior',ic:'W',cl:0xaaaaaa,ac:0xffd700,h:1.8,w:.6,ds:'Tank/Melee',wp:['sword','shield','2h_sword','hammer','axe','mace']},
+{id:'mage',nm:'Mage',ic:'M',cl:0x6a5acd,ac:0x00bfff,h:2.0,w:.45,ds:'Caster',wp:['staff','tome','mace','wand','relic']},
+{id:'ranger',nm:'Ranger',ic:'R',cl:0x228b22,ac:0x8fbc8f,h:1.75,w:.5,ds:'DPS/Ranged',wp:['bow','crossbow','gun','dagger','2h_sword','spear']},
+{id:'worge',nm:'Worge',ic:'W',cl:0x8b6914,ac:0xff8c00,h:2.2,w:.7,ds:'Shapeshifter',wp:['staff','spear','dagger','bow','hammer','mace','relic']}
+];
+const W=[
+{id:'sword',n:'Sword'},{id:'shield',n:'Shield'},{id:'2h_sword',n:'2H Sword'},
+{id:'staff',n:'Staff'},{id:'tome',n:'Tome'},{id:'mace',n:'Mace'},
+{id:'wand',n:'Wand'},{id:'relic',n:'Relic'},{id:'bow',n:'Bow'},
+{id:'crossbow',n:'XBow'},{id:'gun',n:'Gun'},{id:'dagger',n:'Dagger'},
+{id:'spear',n:'Spear'},{id:'hammer',n:'Hammer'},{id:'axe',n:'Axe'}
+];
+const HB=[{s:1,n:'Strike',t:'s'},{s:2,n:'Block',t:'s'},{s:3,n:'Rage',t:'s'},{s:4,n:'Spin',t:'s'},{s:5,n:'',t:'e'},{s:6,n:'Food',t:'i'},{s:7,n:'Potion',t:'i'},{s:8,n:'Relic',t:'i'}];
+const EV={forest:{bg:0x0e1a0e,sn:0xffffff,am:0x2a3a2a,fg:.018},desert:{bg:0x2a2210,sn:0xffcc66,am:0x443322,fg:.012},arctic:{bg:0x101828,sn:0xaaccff,am:0x223344,fg:.022},volcanic:{bg:0x1a0808,sn:0xff4400,am:0x331100,fg:.028},void:{bg:0x040410,sn:0x6633ff,am:0x0a0020,fg:.035}};
 
-    <!-- Main Playground UI -->
-    <div id="playground-ui">
-      <!-- Character Selection Panel -->
-      <div class="character-panel">
-        <h3>Characters</h3>
-        <div class="character-grid">
-          <div class="character-card active" data-character="orc-warrior">
-            <img src="/assets/characters/orc-warrior.png" alt="Orc Warrior" />
-            <span>Orc Warrior</span>
-          </div>
-          <div class="character-card" data-character="skeleton-mage">
-            <img src="/assets/characters/skeleton-mage.png" alt="Skeleton Mage" />
-            <span>Skeleton Mage</span>
-          </div>
-          <div class="character-card" data-character="elf-ranger">
-            <img src="/assets/characters/elf-ranger.png" alt="Elf Ranger" />
-            <span>Elf Ranger</span>
-          </div>
-          <div class="character-card" data-character="human-paladin">
-            <img src="/assets/characters/human-paladin.png" alt="Human Paladin" />
-            <span>Human Paladin</span>
-          </div>
-          <div class="character-card" data-character="dwarf-berserker">
-            <img src="/assets/characters/dwarf-berserker.png" alt="Dwarf Berserker" />
-            <span>Dwarf Berserker</span>
-          </div>
-          <div class="character-card" data-character="dwarven-guardian">
-            <img src="/assets/characters/dwarven-guardian.png" alt="Dwarven Guardian" />
-            <span>Dwarven Guardian</span>
-          </div>
-        </div>
-        
-        <!-- Character Actions -->
-        <div class="character-actions">
-          <button id="btn-animate" class="action-btn">Play Animation</button>
-          <button id="btn-combat-stance" class="action-btn">Combat Stance</button>
-          <button id="btn-victory-pose" class="action-btn">Victory Pose</button>
-        </div>
-      </div>
-
-      <!-- Environment Controls -->
-      <div class="controls-panel">
-        <h3>Environment</h3>
-        <div class="control-group">
-          <label>Terrain Scale</label>
-          <input type="range" id="terrain-scale" min="0.1" max="5" step="0.1" value="1">
-          <span class="value-display">1.0</span>
-        </div>
-        <div class="control-group">
-          <label>Terrain Height</label>
-          <input type="range" id="terrain-height" min="0" max="10" step="0.5" value="2">
-          <span class="value-display">2.0</span>
-        </div>
-        <div class="control-group">
-          <label>Noise Frequency</label>
-          <input type="range" id="noise-freq" min="0.1" max="2" step="0.1" value="0.5">
-          <span class="value-display">0.5</span>
-        </div>
-        <div class="control-group">
-          <label>Time Speed</label>
-          <input type="range" id="time-speed" min="0" max="2" step="0.1" value="0.5">
-          <span class="value-display">0.5</span>
-        </div>
-        <div class="control-group">
-          <label>Environment</label>
-          <select id="environment-preset">
-            <option value="forest">Enchanted Forest</option>
-            <option value="desert">Desert Wasteland</option>
-            <option value="arctic">Frozen Tundra</option>
-            <option value="volcanic">Volcanic Realm</option>
-            <option value="underwater">Underwater Cavern</option>
-            <option value="floating">Floating Islands</option>
-          </select>
-        </div>
-        
-        <!-- Lighting Controls -->
-        <h4>Lighting</h4>
-        <div class="control-group">
-          <label>Sun Intensity</label>
-          <input type="range" id="sun-intensity" min="0" max="2" step="0.1" value="1">
-          <span class="value-display">1.0</span>
-        </div>
-        <div class="control-group">
-          <label>Ambient Light</label>
-          <input type="range" id="ambient-light" min="0" max="1" step="0.05" value="0.3">
-          <span class="value-display">0.3</span>
-        </div>
-        <div class="control-group">
-          <label>Fog Density</label>
-          <input type="range" id="fog-density" min="0" max="0.1" step="0.005" value="0.02">
-          <span class="value-display">0.02</span>
-        </div>
-        
-        <!-- Camera Controls -->
-        <h4>Camera</h4>
-        <button id="btn-reset" class="control-btn">Reset Camera</button>
-        <button id="btn-follow-mode" class="control-btn">Follow Mode</button>
-        <button id="btn-free-cam" class="control-btn active">Free Camera</button>
-        <button id="btn-cinematic" class="control-btn">Cinematic View</button>
-      </div>
-
-      <!-- Game Modes Panel -->
-      <div class="modes-panel">
-        <h3>Game Modes</h3>
-        <button id="btn-sandbox" class="mode-btn active">Sandbox</button>
-        <button id="btn-arena" class="mode-btn">Arena Battle</button>
-        <button id="btn-exploration" class="mode-btn">Exploration</button>
-        <button id="btn-building" class="mode-btn">World Builder</button>
-        
-        <!-- Arena Mode Controls (hidden by default) -->
-        <div id="arena-controls" class="mode-controls" style="display: none;">
-          <h4>Arena Settings</h4>
-          <div class="control-group">
-            <label>Arena Size</label>
-            <select id="arena-size">
-              <option value="small">Small (20x20)</option>
-              <option value="medium">Medium (40x40)</option>
-              <option value="large">Large (60x60)</option>
-            </select>
-          </div>
-          <div class="control-group">
-            <label>Opponents</label>
-            <input type="range" id="opponent-count" min="1" max="8" step="1" value="2">
-            <span class="value-display">2</span>
-          </div>
-          <button id="btn-start-battle" class="control-btn">Start Battle!</button>
-        </div>
-
-        <!-- Building Mode Controls -->
-        <div id="building-controls" class="mode-controls" style="display: none;">
-          <h4>Building Tools</h4>
-          <div class="tool-grid">
-            <button class="tool-btn" data-tool="terrain">Terrain</button>
-            <button class="tool-btn" data-tool="structures">Structures</button>
-            <button class="tool-btn" data-tool="vegetation">Vegetation</button>
-            <button class="tool-btn" data-tool="water">Water</button>
-          </div>
-          <button id="btn-save-world" class="control-btn">Save World</button>
-          <button id="btn-load-world" class="control-btn">Load World</button>
-        </div>
-      </div>
-
-      <!-- Info and Navigation -->
-      <div class="info-panel">
-        <div class="stats-display">
-          <div class="stat">
-            <label>FPS:</label>
-            <span id="fps-counter">60</span>
-          </div>
-          <div class="stat">
-            <label>Triangles:</label>
-            <span id="triangle-count">0</span>
-          </div>
-          <div class="stat">
-            <label>Draw Calls:</label>
-            <span id="draw-calls">0</span>
-          </div>
-        </div>
-        <div class="controls-info">
-          <p><strong>Mouse:</strong> Orbit | <strong>Scroll:</strong> Zoom | <strong>WASD:</strong> Pan</p>
-          <p><strong>Space:</strong> Jump | <strong>Shift:</strong> Run | <strong>C:</strong> Change Camera</p>
-        </div>
-        <div class="navigation">
-          <a href="/" class="nav-btn back-btn">← Back to Game</a>
-          <button id="btn-fullscreen" class="nav-btn">Fullscreen</button>
-          <button id="btn-screenshot" class="nav-btn">Screenshot</button>
-          <a href="/docs" class="nav-btn">Documentation</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Notification System -->
-    <div id="notifications"></div>
-
-    <!-- Performance Monitor (Development) -->
-    <div id="performance-monitor" style="display: none;">
-      <canvas id="performance-graph"></canvas>
-    </div>
-
-    <script type="module" src="/src/playground.js"></script>
-  </body>
+class Eng{
+constructor(){this.sc=new THREE.Scene();this.ck=new THREE.Clock();this.rc=null;this.wp=null;this.cg=null;this.wm=null;this.npc=[];this.gh=null;this.hh=null;this.as='idle';this.at=0;this.ad={w:0,s:1,g:1,h:0};this.ks={};this.mx=0;this.my=0;this.mb=0;this.fp=0;this.fc=0;this.lt=performance.now();this.init()}
+init(){
+const c=document.getElementById('vp');this.r=new THREE.WebGLRenderer({canvas:c,antialias:true});
+this.r.setSize(innerWidth,innerHeight);this.r.setPixelRatio(Math.min(devicePixelRatio,2));
+this.r.shadowMap.enabled=true;this.r.shadowMap.type=THREE.PCFSoftShadowMap;
+this.r.outputColorSpace=THREE.SRGBColorSpace;this.r.toneMapping=THREE.ACESFilmicToneMapping;this.r.toneMappingExposure=1.2;
+this.ca=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,500);this.ca.position.set(5,4,8);
+this.ct=new OrbitControls(this.ca,this.r.domElement);this.ct.enableDamping=true;this.ct.dampingFactor=.08;this.ct.target.set(0,1.5,0);this.ct.maxDistance=40;this.ct.minDistance=2;
+this.su=new THREE.DirectionalLight(0xffffff,1);this.su.position.set(8,12,6);this.su.castShadow=true;this.su.shadow.mapSize.set(2048,2048);
+const sh=this.su.shadow.camera;sh.near=.5;sh.far=50;sh.left=-15;sh.right=15;sh.top=15;sh.bottom=-15;this.sc.add(this.su);
+this.am=new THREE.AmbientLight(0x2a3a2a,.5);this.sc.add(this.am);
+this.rl=new THREE.PointLight(0xff6b35,.4,20);this.rl.position.set(-6,4,-6);this.sc.add(this.rl);
+this.fl=new THREE.PointLight(0x3366ff,.3,20);this.fl.position.set(6,3,-4);this.sc.add(this.fl);
+this.sc.fog=new THREE.FogExp2(0x0e1a0e,.018);this.sc.background=new THREE.Color(0x0e1a0e);
+const gm=new THREE.Mesh(new THREE.CircleGeometry(25,64),new THREE.MeshStandardMaterial({color:0x0e1a0e,roughness:.9}));gm.rotation.x=-Math.PI/2;gm.receiveShadow=true;this.gd=gm;this.sc.add(gm);
+this.gh=new THREE.GridHelper(30,30,0x1a2a1a,0x151f15);this.gh.position.y=.01;this.sc.add(this.gh);
+const pl=new THREE.Mesh(new THREE.CylinderGeometry(2,2.2,.12,32),new THREE.MeshStandardMaterial({color:0x333340,roughness:.4,metalness:.3}));pl.position.y=.06;pl.receiveShadow=true;this.sc.add(pl);
+const rn=new THREE.Mesh(new THREE.RingGeometry(1.9,2.1,64),new THREE.MeshBasicMaterial({color:0xff6b35,transparent:true,opacity:.12,side:THREE.DoubleSide}));rn.rotation.x=-Math.PI/2;rn.position.y=.13;this.sc.add(rn);
+this.bUI();this.sR('warrior');
+onresize=()=>{this.ca.aspect=innerWidth/innerHeight;this.ca.updateProjectionMatrix();this.r.setSize(innerWidth,innerHeight)};
+onkeydown=e=>{this.ks[e.code]=1;const n=+e.key;if(n>=1&&n<=8){this.uS(n);e.preventDefault()}};onkeyup=e=>{this.ks[e.code]=0};
+onmousemove=e=>{this.mx=e.clientX;this.my=e.clientY};onmousedown=e=>{this.mb=e.buttons};onmouseup=e=>{this.mb=e.buttons};
+setTimeout(()=>{document.getElementById('lf').style.width='100%';setTimeout(()=>document.getElementById('ld').classList.add('done'),400)},250);
+this.lp()}
+// Race model
+mR(rc){const g=new THREE.Group(),bw=rc.w,bm=new THREE.MeshStandardMaterial({color:rc.cl,roughness:.55,metalness:.2});
+g.add(Object.assign(new THREE.Mesh(new THREE.CapsuleGeometry(bw,rc.h*.45,8,16),bm),{position:new THREE.Vector3(0,rc.h*.45,0),castShadow:true}));
+g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(bw*.6,16,12),bm),{position:new THREE.Vector3(0,rc.h*.75,0),castShadow:true}));
+const em=new THREE.MeshStandardMaterial({color:rc.ac,emissive:rc.ac,emissiveIntensity:.8});
+[-1,1].forEach(s=>{g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(bw*.07,8,6),em),{position:new THREE.Vector3(s*bw*.38,rc.h*.78,bw*.45)}))});
+const lm=new THREE.MeshStandardMaterial({color:rc.cl,roughness:.7});
+[-1,1].forEach(s=>{g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(bw*.22,bw*.18,rc.h*.33,8),lm),{position:new THREE.Vector3(s*bw*.38,rc.h*.165,0),castShadow:true}))});
+[-1,1].forEach(s=>{const a=new THREE.Mesh(new THREE.CylinderGeometry(bw*.14,bw*.11,rc.h*.32,8),bm);a.position.set(s*(bw+bw*.18),rc.h*.46,0);a.rotation.z=s*.15;a.castShadow=true;g.add(a)});
+if(rc.id==='warrior'){const pm=new THREE.MeshStandardMaterial({color:0x777777,roughness:.3,metalness:.7});[-1,1].forEach(s=>{g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(bw*.55,.1,bw*.45),pm),{position:new THREE.Vector3(s*(bw+.08),rc.h*.63,0),castShadow:true}))});g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(bw*1.4,.08,.1),pm),{position:new THREE.Vector3(0,rc.h*.78,bw*.5)}))}
+else if(rc.id==='mage'){g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(bw*.75,bw*1.6,8),new THREE.MeshStandardMaterial({color:0x1a0e3e,roughness:.7})),{position:new THREE.Vector3(0,rc.h*.88+bw*.4,0)}));for(let i=0;i<3;i++){const o=new THREE.Mesh(new THREE.SphereGeometry(.07,8,6),new THREE.MeshStandardMaterial({color:0x00ccff,emissive:0x0066ff,emissiveIntensity:1.2}));const a=(i/3)*Math.PI*2;o.position.set(Math.cos(a)*.7,rc.h*.6,Math.sin(a)*.7);o.userData.oi=i;g.add(o)}}
+else if(rc.id==='ranger'){g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(bw*.65,12,8,0,Math.PI*2,0,Math.PI*.55),new THREE.MeshStandardMaterial({color:0x2a3a22,roughness:.8,side:THREE.DoubleSide})),{position:new THREE.Vector3(0,rc.h*.78,0)}));for(let i=0;i<3;i++){g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.06,.08,.5,6),new THREE.MeshStandardMaterial({color:0x5a3a1a,roughness:.8})),{position:new THREE.Vector3(.12+i*.05,rc.h*.55,-bw-.08)}))}}
+else if(rc.id==='worge'){[-1,1].forEach(s=>{g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(bw*.25,bw*.5,4),new THREE.MeshStandardMaterial({color:rc.cl,roughness:.7})),{position:new THREE.Vector3(s*bw*.5,rc.h*.86,0)}))});const sn=new THREE.Mesh(new THREE.ConeGeometry(bw*.25,bw*.5,6),new THREE.MeshStandardMaterial({color:0x9a7520,roughness:.6}));sn.position.set(0,rc.h*.72,bw*.6);sn.rotation.x=Math.PI/2;g.add(sn);const tl=new THREE.Mesh(new THREE.CylinderGeometry(.04,.1,.7,6),new THREE.MeshStandardMaterial({color:rc.cl,roughness:.7}));tl.position.set(0,rc.h*.25,-bw-.25);tl.rotation.x=.7;g.add(tl)}
+g.userData.rc=rc;return g}
+// Weapon model
+mW(id){const g=new THREE.Group(),m=new THREE.MeshStandardMaterial({color:0xcccccc,roughness:.3,metalness:.7}),w=new THREE.MeshStandardMaterial({color:0x8b5a2b,roughness:.8}),x=new THREE.MeshStandardMaterial({color:0x6633ff,emissive:0x3311aa,emissiveIntensity:.6,roughness:.2});
+if(id==='sword'){g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.07,1.1,.02),m),{position:new THREE.Vector3(0,.55,0)}));g.add(new THREE.Mesh(new THREE.BoxGeometry(.28,.05,.05),m));g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.22,8),w),{position:new THREE.Vector3(0,-.13,0)}))}
+else if(id==='shield'){g.add(new THREE.Mesh(new THREE.CircleGeometry(.45,8),new THREE.MeshStandardMaterial({color:0x8888aa,roughness:.4,metalness:.5})));g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(.1,8,6),m),{position:new THREE.Vector3(0,0,.04)}))}
+else if(id==='2h_sword'){g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.1,1.6,.025),m),{position:new THREE.Vector3(0,.8,0)}));g.add(new THREE.Mesh(new THREE.BoxGeometry(.4,.06,.06),m));g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,.45,8),w),{position:new THREE.Vector3(0,-.25,0)}))}
+else if(id==='staff'){g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,1.8,8),w),{position:new THREE.Vector3(0,.9,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(.12,12,8),x),{position:new THREE.Vector3(0,1.9,0)}))}
+else if(id==='tome'){g.add(new THREE.Mesh(new THREE.BoxGeometry(.3,.4,.07),new THREE.MeshStandardMaterial({color:0x8b0000,roughness:.7})));g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.26,.37,.04),new THREE.MeshStandardMaterial({color:0xf5f5dc})),{position:new THREE.Vector3(0,0,.01)}))}
+else if(id==='mace'){g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(.15,8,6),m),{position:new THREE.Vector3(0,.7,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.7,8),w),{position:new THREE.Vector3(0,.35,0)}))}
+else if(id==='wand'){g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.015,.025,.5,8),w),{position:new THREE.Vector3(0,.25,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(.05,8,6),x),{position:new THREE.Vector3(0,.55,0)}))}
+else if(id==='relic'){g.add(Object.assign(new THREE.Mesh(new THREE.OctahedronGeometry(.18),x),{position:new THREE.Vector3(0,.25,0)}))}
+else if(id==='bow'){const a=new THREE.Mesh(new THREE.TorusGeometry(.5,.025,8,16,Math.PI),w);a.rotation.z=Math.PI/2;a.position.y=.5;g.add(a)}
+else if(id==='crossbow'){g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.07,.5,.05),w),{position:new THREE.Vector3(0,.25,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.6,.03,.03),w),{position:new THREE.Vector3(0,.5,0)}))}
+else if(id==='gun'){const b=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.7,8),m);b.rotation.x=Math.PI/2;b.position.set(0,.3,.35);g.add(b);g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.08,.12,.35),w),{position:new THREE.Vector3(0,.2,-.15)}))}
+else if(id==='dagger'){g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.05,.4,.015),m),{position:new THREE.Vector3(0,.2,0)}));g.add(new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.12,8),w))}
+else if(id==='spear'){g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,2,8),w),{position:new THREE.Vector3(0,1,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(.06,.25,6),m),{position:new THREE.Vector3(0,2.15,0)}))}
+else if(id==='hammer'){g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.3,.17,.17),m),{position:new THREE.Vector3(0,.8,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.8,8),w),{position:new THREE.Vector3(0,.4,0)}))}
+else if(id==='axe'){g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(.02,.35,.25),m),{position:new THREE.Vector3(.08,.65,0)}));g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.7,8),w),{position:new THREE.Vector3(0,.35,0)}))}
+return g}
+// Select race
+sR(id){const rc=R.find(r=>r.id===id);if(!rc)return;this.rc=rc;if(this.cg)this.sc.remove(this.cg);this.cg=this.mR(rc);this.sc.add(this.cg);this.bWG();
+if(this.wp&&rc.wp.includes(this.wp))this.eW(this.wp);else{if(this.wm){this.sc.remove(this.wm);this.wm=null}this.wp=null;this.eW(rc.wp[0])}
+document.querySelectorAll('.rc').forEach(c=>c.classList.toggle('a',c.dataset.id===id));this.nf('Selected '+rc.nm)}
+// Equip weapon
+eW(id){if(!id)return;this.wp=id;if(this.wm)this.sc.remove(this.wm);this.wm=this.mW(id);const rc=this.rc;this.wm.position.set(rc?rc.w+.3:.8,rc?rc.h*.35:.7,.1);this.sc.add(this.wm);document.querySelectorAll('.wb').forEach(b=>b.classList.toggle('a',b.dataset.id===id))}
+// UI builders
+bUI(){document.getElementById('rg').innerHTML=R.map(r=>`<div class="rc" data-id="${r.id}" onclick="G.sR('${r.id}')"><span class="ic" style="font-size:1.1rem;font-weight:700;color:#${r.cl.toString(16).padStart(6,'0')}">${r.ic}</span><span class="nm">${r.nm}</span><span class="ds">${r.ds}</span></div>`).join('');this.bWG();this.bHB()}
+bWG(){const ok=this.rc?this.rc.wp:[];document.getElementById('wg').innerHTML=W.map(w=>{const a=ok.includes(w.id);return`<div class="wb ${a?'':'lk'} ${this.wp===w.id?'a':''}" data-id="${w.id}" onclick="${a?`G.eW('${w.id}')`:''}"><span class="wi" style="font-size:.7rem">${w.id[0].toUpperCase()}</span>${w.n}</div>`}).join('')}
+bHB(){document.getElementById('hb').innerHTML=HB.map(h=>`<div class="hs ${h.t==='e'?'emp':''}" onclick="G.uS(${h.s})"><span class="k">${h.s}</span><span class="si" style="font-size:.75rem;font-weight:600">${h.s}</span><span class="sn">${h.n}</span></div>`).join('')}
+// Admin
+tg(p){const mp={w:'tw',s:'ts',g:'tgr',h:'thb'};this.ad[p]=this.ad[p]?0:1;const el=document.getElementById(mp[p]);if(el)el.classList.toggle('on',!!this.ad[p]);
+if(p==='w')this.sc.traverse(o=>{if(o.isMesh&&o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.wireframe=!!this.ad.w);else o.material.wireframe=!!this.ad.w}});
+if(p==='s')this.r.shadowMap.enabled=!!this.ad.s;if(p==='g'&&this.gh)this.gh.visible=!!this.ad.g;
+if(p==='h'){if(this.hh){this.sc.remove(this.hh);this.hh=null}if(this.ad.h&&this.cg){this.hh=new THREE.Box3Helper(new THREE.Box3().setFromObject(this.cg),0x00ff00);this.sc.add(this.hh)}}}
+sE(p){const e=EV[p];if(!e)return;this.sc.background.setHex(e.bg);this.sc.fog.color.setHex(e.bg);this.sc.fog.density=e.fg;this.su.color.setHex(e.sn);this.am.color.setHex(e.am);this.gd.material.color.setHex(e.bg)}
+sT(v){document.getElementById('tv').textContent=v;const a=((v-6)/24)*Math.PI*2;this.su.position.set(Math.cos(a)*12,Math.abs(Math.sin(a))*12+1,6);this.su.intensity=.3+Math.max(0,Math.sin(a))*1.5}
+sS(v){this.su.intensity=+v;document.getElementById('siv').textContent=v}
+sF(v){this.sc.fog.density=+v;document.getElementById('fgv').textContent=v}
+sSc(v){if(this.cg)this.cg.scale.setScalar(+v);document.getElementById('scv').textContent=v}
+spN(){const ri=Math.floor(Math.random()*R.length);const n=this.mR(R[ri]);const a=Math.random()*Math.PI*2,d=4+Math.random()*6;n.position.set(Math.cos(a)*d,0,Math.sin(a)*d);n.rotation.y=Math.random()*Math.PI*2;n.scale.setScalar(.6+Math.random()*.4);this.sc.add(n);this.npc.push(n);this.nf(`${R[ri].nm} spawned (${this.npc.length})`)}
+clN(){this.npc.forEach(n=>this.sc.remove(n));this.npc=[];this.nf('Cleared')}
+wR(){const sp=1.1,sx=-((W.length-1)*sp)/2;W.forEach((w,i)=>{const m=this.mW(w.id);m.position.set(sx+i*sp,1.2,-5);m.scale.setScalar(1.4);this.sc.add(m);this.npc.push(m)});this.nf(`Rack: ${W.length} weapons`)}
+sC(m){const p={orbit:[5,4,8],shoulder:[1.5,2.5,4],top:[0,12,.1],front:[0,2,6]};const c=p[m]||p.orbit;this.ca.position.set(...c);this.ct.target.set(0,m==='top'?0:1.5,0);this.ct.update()}
+rC(){this.sC('orbit');document.getElementById('cm').value='orbit'}
+an(s){this.as=s;this.at=0}
+uS(n){const h=HB[n-1];if(!h||h.t==='e')return;this.nf(`${h.n} [${h.s}]`);const sl=document.querySelectorAll('.hs');if(sl[n-1]){sl[n-1].classList.add('ac');setTimeout(()=>sl[n-1].classList.remove('ac'),200)}}
+ss(){this.r.render(this.sc,this.ca);const l=document.createElement('a');l.download='grudge-screenshot.png';l.href=this.r.domElement.toDataURL();l.click();this.nf('Screenshot saved')}
+tID(){document.getElementById('id').classList.toggle('sh')}
+async fOS(){const el=document.getElementById('oss');el.textContent='Fetching...';try{const b='https://molochthedagod.github.io/ObjectStore/api/v1';const[a,w]=await Promise.all([fetch(b+'/armor.json').then(r=>r.json()).catch(()=>null),fetch(b+'/weapons.json').then(r=>r.json()).catch(()=>null)]);const p=[];if(a)p.push('Armor:'+a.totalSlots+'slots');if(w)p.push('Weapons:loaded');el.innerHTML='<span style="color:#4f4">OK</span> '+(p.join(' | ')||'Connected');this.nf('ObjectStore loaded')}catch(e){el.innerHTML='<span style="color:#f44">ERR</span> '+e.message}}
+nf(m){const n=document.createElement('div');n.className='nf inf';n.textContent=m;document.body.appendChild(n);setTimeout(()=>n.remove(),2000)}
+lp(){requestAnimationFrame(()=>this.lp());const dt=this.ck.getDelta(),t=this.ck.getElapsedTime();this.at+=dt;this.ct.update();
+if(this.cg){if(this.as==='idle')this.cg.position.y=Math.sin(t*2)*.04;
+else if(this.as==='atk'){const p=Math.min(this.at/.4,1);this.cg.position.z=Math.sin(p*Math.PI)*-1.5;this.cg.rotation.y=Math.sin(p*Math.PI)*.5;if(p>=1)this.as='idle'}
+else if(this.as==='spin'){this.cg.rotation.y+=dt*8;if(this.at>1.5){this.cg.rotation.y=0;this.as='idle'}}
+if(this.rc&&this.rc.id==='mage')this.cg.children.forEach(c=>{if(c.userData.oi!==undefined){const a=(c.userData.oi/3)*Math.PI*2+t*2;c.position.set(Math.cos(a)*.7,this.rc.h*.6+Math.sin(t*3+c.userData.oi)*.08,Math.sin(a)*.7)}})}
+if(this.wm)this.wm.position.y=(this.rc?this.rc.h*.35:.7)+Math.sin(t*2)*.02;
+if(this.ad.h&&this.cg){if(this.hh)this.sc.remove(this.hh);this.hh=new THREE.Box3Helper(new THREE.Box3().setFromObject(this.cg),0x00ff00);this.sc.add(this.hh)}
+this.rl.position.set(Math.cos(t*.3)*6,4,Math.sin(t*.3)*6);
+this.fc++;const now=performance.now();if(now-this.lt>=1e3){this.fp=this.fc;this.fc=0;this.lt=now;document.getElementById('fps').textContent=this.fp;document.getElementById('tri').textContent=this.r.info.render.triangles;document.getElementById('cal').textContent=this.r.info.render.calls}
+const dk=document.getElementById('dk');if(dk){const ac=Object.entries(this.ks).filter(([,v])=>v).map(([k])=>k);dk.innerHTML=ac.length?ac.map(k=>`<span class="ak">${k}</span>`).join(' '):'-';document.getElementById('dm').textContent=this.mx+','+this.my;document.getElementById('db').textContent=this.mb||'-'}
+this.r.render(this.sc,this.ca)}}
+const G=new Eng();
+</script>
+</body>
 </html>
