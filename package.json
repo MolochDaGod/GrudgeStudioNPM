@@ -16,6 +16,7 @@
     "docs",
     "src",
     "ai-agent",
+    "cloud",
     "README.md",
     "TOOLS.md",
     "GETTING_STARTED.md"
@@ -40,7 +41,8 @@
     "./docs": "./docs/index.js",
     "./tools": "./src/tools/index.js",
     "./playground": "./src/playground.js",
-    "./ai-agent": "./ai-agent/core/GrudgeStudioAgent.js"
+    "./ai-agent": "./ai-agent/core/GrudgeStudioAgent.js",
+    "./cloud": "./cloud/index.js"
   },
   "keywords": [
     "game-engine",
@@ -91,7 +93,8 @@
   },
   "peerDependencies": {
     "socket.io": ">=4.0.0",
-    "socket.io-client": ">=4.0.0"
+    "socket.io-client": ">=4.0.0",
+    "@supabase/supabase-js": ">=2.0.0"
   },
   "engines": {
     "node": ">=16.0.0",
