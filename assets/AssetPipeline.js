@@ -18,6 +18,32 @@ export class AssetPipeline {
         }
       }
     })
+
+    // FBX processor — converts FBX to GLB via fbx2gltf
+    this.registerProcessor('fbx', {
+      extensions: ['fbx'],
+      process: async (asset, options) => {
+        try {
+          const { AnimationConverter } = await import('./AnimationConverter.js')
+          const converter = new AnimationConverter({
+            framerate: options.framerate ?? 'bake30',
+            binary: options.binary ?? true,
+            computeNormals: options.computeNormals ?? false,
+          })
+          const result = await converter.convert(asset.path, options.outputPath)
+          return {
+            ...asset,
+            type: 'model',
+            convertedFrom: 'fbx',
+            outputPath: result.dest,
+            conversionDuration: result.duration,
+          }
+        } catch (err) {
+          console.warn('FBX conversion requires Node.js + fbx2gltf:', err.message)
+          return { ...asset, conversionError: err.message }
+        }
+      }
+    })
     
     this.registerProcessor('texture', {
       extensions: ['png', 'jpg', 'jpeg', 'webp'],
