@@ -1,7 +1,7 @@
 {
   "name": "grudge-studio",
-  "version": "1.2.0",
-  "description": "GRUDGE STUDIO - Complete 3D Game Development SDK with Three.js, Socket.io, Advanced Shaders, Physics, AI Assistance, and Deployment Tools",
+  "version": "2.0.0",
+  "description": "GRUDGE STUDIO — Game SDK + shared backend client for all Grudge Warlords games. Three.js, Socket.IO, AI agents, cloud backend integration.",
   "type": "module",
   "main": "index.js",
   "files": [
@@ -42,7 +42,8 @@
     "./tools": "./src/tools/index.js",
     "./playground": "./src/playground.js",
     "./ai-agent": "./ai-agent/core/GrudgeStudioAgent.js",
-    "./cloud": "./cloud/index.js"
+    "./cloud": "./cloud/index.js",
+    "./cloud/vite-proxy": "./cloud/vite-proxy.js"
   },
   "keywords": [
     "game-engine",
@@ -58,7 +59,9 @@
     "combat-system",
     "networking",
     "ui-canvas",
-    "asset-management"
+    "asset-management",
+    "grudge-warlords",
+    "grudge-studio"
   ],
   "scripts": {
     "dev": "vite",
@@ -92,12 +95,10 @@
     "three": "^0.160.0"
   },
   "peerDependencies": {
-    "socket.io": ">=4.0.0",
-    "socket.io-client": ">=4.0.0",
-    "@supabase/supabase-js": ">=2.0.0"
+    "socket.io-client": ">=4.0.0"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
