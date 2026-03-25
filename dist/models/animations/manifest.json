@@ -1,0 +1,107 @@
+{
+  "version": "1.0",
+  "description": "Mixamo animations converted from FBX to GLB",
+  "rig": "mixamorig",
+  "animations": {
+    "idle": {
+      "file": "idle.glb",
+      "loop": true,
+      "duration": 96
+    },
+    "idle_combat": {
+      "file": "idle_(2).glb",
+      "loop": true,
+      "duration": 240
+    },
+    "idle_alert": {
+      "file": "idle_(5).glb",
+      "loop": true,
+      "duration": 54
+    },
+    "walking": {
+      "file": "walking.glb",
+      "loop": true,
+      "duration": 27
+    },
+    "running": {
+      "file": "running.glb",
+      "loop": true,
+      "duration": 21
+    },
+    "run_to_stop": {
+      "file": "run_to_stop.glb",
+      "loop": false,
+      "duration": 27
+    },
+    "jumping_up": {
+      "file": "jumping_up.glb",
+      "loop": false,
+      "duration": 5
+    },
+    "falling_idle": {
+      "file": "falling_idle.glb",
+      "loop": true,
+      "duration": 16
+    },
+    "falling_to_roll": {
+      "file": "falling_to_roll.glb",
+      "loop": false,
+      "duration": 42
+    },
+    "hard_landing": {
+      "file": "hard_landing.glb",
+      "loop": false,
+      "duration": 48
+    },
+    "left_turn": {
+      "file": "left_turn.glb",
+      "loop": false,
+      "duration": 24
+    },
+    "right_turn": {
+      "file": "right_turn.glb",
+      "loop": false,
+      "duration": 24
+    },
+    "stand_to_cover": {
+      "file": "stand_to_cover.glb",
+      "loop": false,
+      "duration": 27
+    },
+    "stand_to_cover_alt": {
+      "file": "stand_to_cover_(2).glb",
+      "loop": false,
+      "duration": 30
+    },
+    "cover_to_stand": {
+      "file": "cover_to_stand.glb",
+      "loop": false,
+      "duration": 36
+    },
+    "cover_to_stand_alt": {
+      "file": "cover_to_stand_(2).glb",
+      "loop": false,
+      "duration": 33
+    },
+    "left_cover_sneak": {
+      "file": "left_cover_sneak.glb",
+      "loop": true,
+      "duration": 27
+    },
+    "right_cover_sneak": {
+      "file": "right_cover_sneak.glb",
+      "loop": true,
+      "duration": 27
+    },
+    "crouched_sneaking_left": {
+      "file": "crouched_sneaking_left.glb",
+      "loop": true,
+      "duration": 30
+    },
+    "crouched_sneaking_right": {
+      "file": "crouched_sneaking_right.glb",
+      "loop": true,
+      "duration": 26
+    }
+  }
+}

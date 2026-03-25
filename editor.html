@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grudge Playground — Editor</title>
+    <link href="/src/styles/editor.css" rel="stylesheet" type="text/css" />
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e1a; color: #e0e4f0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+      /* ── Layout ─────────────────────────────────────── */
+      #editor-root { display: flex; flex-direction: column; width: 100%; height: 100%; }
+      #editor-topbar {
+        height: 38px; display: flex; align-items: center; gap: 6px;
+        padding: 0 12px; background: #0f1322; border-bottom: 1px solid #1e2540;
+        font-size: 13px; flex-shrink: 0; z-index: 100;
+      }
+      #editor-topbar .logo { font-weight: 700; color: #6ee7b7; margin-right: 12px; letter-spacing: 1px; }
+      #editor-topbar button {
+        padding: 4px 10px; background: #1a2040; border: 1px solid #2a3060; border-radius: 4px;
+        color: #c0c8e0; cursor: pointer; font-size: 12px; transition: all .15s;
+      }
+      #editor-topbar button:hover { border-color: #6ee7b7; color: #fff; }
+      #editor-topbar button.active { background: #6ee7b7; color: #0a0e1a; border-color: #6ee7b7; font-weight: 600; }
+      #editor-topbar .sep { width: 1px; height: 20px; background: #2a3060; margin: 0 4px; }
+      #editor-topbar .spacer { flex: 1; }
+      #editor-topbar .badge { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+      #editor-topbar .badge-edit { background: #22c55e22; color: #6ee7b7; border: 1px solid #22c55e44; }
+      #editor-topbar .badge-play { background: #ef444422; color: #f87171; border: 1px solid #ef444444; }
+      #editor-topbar .badge-gpu { background: #3b82f622; color: #60a5fa; border: 1px solid #3b82f644; }
+
+      #editor-body { display: flex; flex: 1; overflow: hidden; }
+
+      /* ── Left: Asset Library ─────────────────────────── */
+      #asset-panel {
+        width: 220px; background: #0f1322; border-right: 1px solid #1e2540;
+        display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
+      }
+      #asset-panel .panel-header {
+        padding: 10px 12px; font-weight: 600; font-size: 12px; color: #6ee7b7;
+        border-bottom: 1px solid #1e2540; text-transform: uppercase; letter-spacing: .5px;
+      }
+      #asset-search {
+        margin: 8px; padding: 6px 10px; background: #141a2e; border: 1px solid #2a3060;
+        border-radius: 6px; color: #e0e4f0; font-size: 12px; outline: none;
+      }
+      #asset-search:focus { border-color: #6ee7b7; }
+      #asset-categories { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 8px 8px; }
+      #asset-categories button {
+        padding: 3px 8px; font-size: 10px; background: #1a2040; border: 1px solid #2a3060;
+        border-radius: 4px; color: #8090b0; cursor: pointer;
+      }
+      #asset-categories button.active { background: #6ee7b722; color: #6ee7b7; border-color: #6ee7b7; }
+      #asset-list { flex: 1; overflow-y: auto; padding: 4px 8px; }
+      .asset-item {
+        display: flex; align-items: center; gap: 8px; padding: 8px; margin-bottom: 4px;
+        background: #141a2e; border: 1px solid transparent; border-radius: 6px; cursor: grab;
+        transition: all .15s; font-size: 12px;
+      }
+      .asset-item:hover { border-color: #6ee7b7; background: #1a2244; }
+      .asset-item .icon { font-size: 18px; width: 24px; text-align: center; }
+      .asset-item .name { flex: 1; color: #c0c8e0; }
+      .asset-item .type { font-size: 10px; color: #6080a0; }
+
+      /* ── Center: Canvas ──────────────────────────────── */
+      #canvas-container { flex: 1; position: relative; overflow: hidden; background: #080c18; }
+      #canvas-container canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+      #play-overlay {
+        display: none; position: absolute; inset: 0; z-index: 50;
+        background: rgba(0,0,0,.85); align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+      }
+      #play-overlay.active { display: flex; }
+      #play-overlay h2 { color: #6ee7b7; font-size: 22px; }
+      #play-overlay button { padding: 10px 32px; font-size: 14px; background: #6ee7b7; color: #0a0e1a; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+      /* ── Right: Inspector + Hierarchy ─────────────────── */
+      #right-panel {
+        width: 260px; background: #0f1322; border-left: 1px solid #1e2540;
+        display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
+      }
+      #hierarchy-container { flex: 1; overflow-y: auto; border-bottom: 1px solid #1e2540; }
+      #inspector-container { flex: 1; overflow-y: auto; }
+
+      /* ── Bottom: Tools / Timeline ─────────────────────── */
+      #bottom-bar {
+        height: 36px; display: flex; align-items: center; gap: 8px;
+        padding: 0 12px; background: #0f1322; border-top: 1px solid #1e2540;
+        font-size: 11px; color: #6080a0; flex-shrink: 0;
+      }
+      #bottom-bar .coord { font-family: 'Consolas', monospace; color: #8090b0; }
+      #bottom-bar .tool-hint { margin-left: auto; }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #0a0e1a; }
+      ::-webkit-scrollbar-thumb { background: #2a3060; border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #3a4080; }
+    </style>
+  </head>
+  <body>
+    <div id="editor-root">
+      <!-- Top Bar -->
+      <div id="editor-topbar">
+        <span class="logo">GRUDGE EDITOR</span>
+        <div class="sep"></div>
+        <button id="btn-mode-edit" class="active">Edit</button>
+        <button id="btn-mode-play">Play</button>
+        <div class="sep"></div>
+        <button id="btn-tool-select" class="active" title="Select (Q)">🖱️ Select</button>
+        <button id="btn-tool-move" title="Move (W)">✥ Move</button>
+        <button id="btn-tool-rotate" title="Rotate (E)">↻ Rotate</button>
+        <button id="btn-tool-scale" title="Scale (R)">⤡ Scale</button>
+        <button id="btn-tool-place" title="Place (P)">📍 Place</button>
+        <button id="btn-tool-sculpt" title="Sculpt (B)">🏔️ Sculpt</button>
+        <div class="sep"></div>
+        <button id="btn-grid-toggle" title="Toggle Grid (G)">⊞ Grid</button>
+        <button id="btn-snap-toggle" title="Toggle Snap">🧲 Snap</button>
+        <button id="btn-mirror-toggle" title="Toggle Mirror">🪞 Mirror</button>
+        <div class="sep"></div>
+        <button id="btn-template" title="New from Template">📋 Template</button>
+        <button id="btn-biome" title="Generate Biome">🤖 Biome</button>
+        <span class="spacer"></span>
+        <span id="gpu-badge" class="badge badge-gpu">WebGL2</span>
+        <span id="mode-badge" class="badge badge-edit">EDIT</span>
+        <button id="btn-save" title="Save Scene (Ctrl+S)">💾 Save</button>
+        <button id="btn-export" title="Export GLTF">📦 Export</button>
+        <button id="btn-network" title="Grudge Network">🌐</button>
+      </div>
+
+      <!-- Body -->
+      <div id="editor-body">
+        <!-- Left: Asset Library -->
+        <div id="asset-panel">
+          <div class="panel-header">📦 Asset Library</div>
+          <input id="asset-search" type="text" placeholder="Search assets..." />
+          <div id="asset-categories"></div>
+          <div id="asset-list"></div>
+        </div>
+
+        <!-- Center: Canvas -->
+        <div id="canvas-container">
+          <canvas id="editor-canvas"></canvas>
+          <div id="play-overlay">
+            <h2>PLAY MODE</h2>
+            <p style="color:#8090b0">Press ESC or click Stop to return to editor</p>
+            <button id="btn-stop-play">⏹ Stop</button>
+          </div>
+        </div>
+
+        <!-- Right: Hierarchy + Inspector -->
+        <div id="right-panel">
+          <div id="hierarchy-container"></div>
+          <div id="inspector-container"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div id="bottom-bar">
+        <span>Objects: <span id="obj-count">0</span></span>
+        <span class="sep" style="height:14px"></span>
+        <span>Cursor: <span id="cursor-pos" class="coord">0, 0, 0</span></span>
+        <span class="sep" style="height:14px"></span>
+        <span>Grid: <span id="grid-size" class="coord">1.0</span></span>
+        <span class="tool-hint" id="tool-hint">Q Select · W Move · E Rotate · R Scale · G Grid · B Sculpt</span>
+      </div>
+    </div>
+
+    <script type="module" src="/src/editor/EditorApp.js"></script>
+  </body>
+</html>

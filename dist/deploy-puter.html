@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy to Puter - Grudge Studio</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f1629 0%, #1a1f3a 100%);
+            min-height: 100vh;
+            color: #e8eaf6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(20, 26, 43, 0.95);
+            border-radius: 16px;
+            border: 1px solid #2a3150;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6ee7b7, #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: #0f1629;
+        }
+        h1 {
+            font-size: 28px;
+            color: #6ee7b7;
+        }
+        .subtitle {
+            color: #a5b4d0;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #a5b4d0;
+        }
+        .info-box strong {
+            color: #6ee7b7;
+        }
+        .config-section {
+            background: rgba(42, 49, 80, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .config-section h3 {
+            font-size: 14px;
+            color: #6ee7b7;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .config-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(42, 49, 80, 0.5);
+        }
+        .config-row:last-child { border-bottom: none; }
+        .config-label { color: #a5b4d0; }
+        .config-value { color: #e8eaf6; font-family: monospace; }
+        .config-value a { color: #6ee7b7; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(42, 49, 80, 0.6);
+            border: 1px solid #2a3150;
+            border-radius: 8px;
+            color: #e8eaf6;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #6ee7b7;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6ee7b7, #3b82f6);
+            color: #0f1629;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(110, 231, 183, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-secondary {
+            background: rgba(42, 49, 80, 0.6);
+            color: #e8eaf6;
+            border: 1px solid #2a3150;
+        }
+        .btn-secondary:hover {
+            border-color: #6ee7b7;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status.info {
+            display: block;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+        }
+        .status.success {
+            display: block;
+            background: rgba(110, 231, 183, 0.2);
+            border: 1px solid #6ee7b7;
+        }
+        .status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+        .progress {
+            height: 6px;
+            background: rgba(42, 49, 80, 0.6);
+            border-radius: 3px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 12px;
+            color: #a5b4d0;
+            margin-top: 8px;
+        }
+        .log {
+            margin-top: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            padding: 3px 0;
+            color: #a5b4d0;
+        }
+        .log-entry.success { color: #6ee7b7; }
+        .log-entry.error { color: #ef4444; }
+        .log-entry.warn { color: #f59e0b; }
+        .file-input-wrapper {
+            margin-bottom: 20px;
+        }
+        .file-input-wrapper label {
+            display: block;
+            color: #a5b4d0;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .file-drop {
+            border: 2px dashed #2a3150;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-drop:hover, .file-drop.dragover {
+            border-color: #6ee7b7;
+            background: rgba(110, 231, 183, 0.05);
+        }
+        .file-drop p {
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        .file-drop .hint {
+            font-size: 12px;
+            color: #4b5563;
+        }
+        .file-list {
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+        .file-item .size {
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">G</div>
+            <h1>Deploy to Puter</h1>
+        </div>
+        <p class="subtitle">Push Grudge Studio Arena to Puter hosting</p>
+
+        <div class="info-box">
+            <strong>How Puter Deployment Works:</strong><br>
+            1. Select your build folder (usually <code>dist/</code>)<br>
+            2. All files are uploaded to Puter's cloud filesystem<br>
+            3. A subdomain is created pointing to your files<br>
+            4. Your app is live at <code>yourname.puter.site</code>
+        </div>
+
+        <div class="config-section">
+            <h3>Upload Build Files</h3>
+            <div class="file-input-wrapper">
+                <label>Select your dist folder contents:</label>
+                <div class="file-drop" id="fileDrop">
+                    <p>Drag & drop your dist folder here</p>
+                    <p class="hint">Or click to select files</p>
+                    <input type="file" id="fileInput" webkitdirectory directory multiple style="display: none;">
+                </div>
+                <div class="file-list" id="fileList"></div>
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h3>Hosting Settings</h3>
+            <label style="display: block; color: #a5b4d0; margin-bottom: 8px; font-size: 13px;">Subdomain (your-name.puter.site)</label>
+            <input type="text" id="subdomain" value="gruda-code" placeholder="Your puter.site subdomain">
+        </div>
+
+        <button class="btn btn-primary" id="deployBtn" onclick="deployToPuter()">
+            Deploy to Puter
+        </button>
+        
+        <button class="btn btn-secondary" onclick="checkAuth()">
+            Check Puter Connection
+        </button>
+
+        <div class="status" id="status"></div>
+        
+        <div id="progressContainer" style="display: none;">
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Preparing...</div>
+        </div>
+
+        <div class="log" id="log" style="display: none;"></div>
+    </div>
+
+    <script>
+        let filesToUpload = [];
+
+        const fileDrop = document.getElementById('fileDrop');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        fileDrop.addEventListener('click', () => fileInput.click());
+        
+        fileDrop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDrop.classList.add('dragover');
+        });
+        
+        fileDrop.addEventListener('dragleave', () => {
+            fileDrop.classList.remove('dragover');
+        });
+        
+        fileDrop.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            fileDrop.classList.remove('dragover');
+            
+            const items = e.dataTransfer.items;
+            filesToUpload = [];
+            
+            for (const item of items) {
+                if (item.kind === 'file') {
+                    const entry = item.webkitGetAsEntry();
+                    if (entry) {
+                        await traverseFileTree(entry, '');
+                    }
+                }
+            }
+            
+            updateFileList();
+        });
+
+        fileInput.addEventListener('change', async (e) => {
+            filesToUpload = [];
+            
+            for (const file of e.target.files) {
+                const relativePath = file.webkitRelativePath || file.name;
+                const pathParts = relativePath.split('/');
+                if (pathParts.length > 1) {
+                    pathParts.shift();
+                }
+                const cleanPath = pathParts.join('/');
+                
+                filesToUpload.push({
+                    path: cleanPath,
+                    file: file
+                });
+            }
+            
+            updateFileList();
+        });
+
+        async function traverseFileTree(entry, path) {
+            if (entry.isFile) {
+                const file = await new Promise((resolve) => entry.file(resolve));
+                const fullPath = path ? `${path}/${entry.name}` : entry.name;
+                filesToUpload.push({ path: fullPath, file });
+            } else if (entry.isDirectory) {
+                const reader = entry.createReader();
+                const entries = await new Promise((resolve) => reader.readEntries(resolve));
+                const dirPath = path ? `${path}/${entry.name}` : entry.name;
+                
+                for (const childEntry of entries) {
+                    await traverseFileTree(childEntry, dirPath);
+                }
+            }
+        }
+
+        function updateFileList() {
+            if (filesToUpload.length === 0) {
+                fileList.innerHTML = '';
+                return;
+            }
+            
+            const totalSize = filesToUpload.reduce((sum, f) => sum + f.file.size, 0);
+            const sizeStr = formatBytes(totalSize);
+            
+            fileList.innerHTML = `<div style="margin-bottom: 10px; color: #6ee7b7;">${filesToUpload.length} files selected (${sizeStr})</div>`;
+            
+            const displayFiles = filesToUpload.slice(0, 20);
+            displayFiles.forEach(f => {
+                fileList.innerHTML += `
+                    <div class="file-item">
+                        <span>${f.path}</span>
+                        <span class="size">${formatBytes(f.file.size)}</span>
+                    </div>
+                `;
+            });
+            
+            if (filesToUpload.length > 20) {
+                fileList.innerHTML += `<div style="color: #6b7280; padding: 5px;">... and ${filesToUpload.length - 20} more files</div>`;
+            }
+            
+            log(`Selected ${filesToUpload.length} files (${sizeStr})`, 'success');
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            logEl.style.display = 'block';
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function setStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.className = `status ${type}`;
+            status.textContent = message;
+        }
+
+        function setProgress(percent, text) {
+            const container = document.getElementById('progressContainer');
+            const bar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            container.style.display = 'block';
+            bar.style.width = `${percent}%`;
+            if (text) progressText.textContent = text;
+        }
+
+        async function checkAuth() {
+            try {
+                setStatus('Checking Puter connection...', 'info');
+                
+                if (typeof puter === 'undefined') {
+                    setStatus('Puter SDK not loaded. Please refresh the page.', 'error');
+                    return false;
+                }
+
+                if (!puter.auth.isSignedIn()) {
+                    setStatus('Not signed in. Signing in to Puter...', 'info');
+                    await puter.auth.signIn();
+                }
+                
+                const user = await puter.auth.getUser();
+                setStatus(`Connected as: ${user.username}`, 'success');
+                log(`Authenticated as ${user.username}`, 'success');
+                return true;
+            } catch (error) {
+                setStatus(`Auth error: ${error.message}`, 'error');
+                log(`Auth error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function createDirectoryRecursive(path) {
+            const parts = path.split('/').filter(p => p);
+            let currentPath = '';
+            
+            for (const part of parts) {
+                currentPath = currentPath ? `${currentPath}/${part}` : part;
+                try {
+                    await puter.fs.mkdir(currentPath);
+                } catch (e) {
+                }
+            }
+        }
+
+        async function deployToPuter() {
+            const deployBtn = document.getElementById('deployBtn');
+            deployBtn.disabled = true;
+            document.getElementById('log').innerHTML = '';
+            
+            try {
+                if (filesToUpload.length === 0) {
+                    setStatus('Please select files to deploy first.', 'error');
+                    deployBtn.disabled = false;
+                    return;
+                }
+
+                const authed = await checkAuth();
+                if (!authed) {
+                    deployBtn.disabled = false;
+                    return;
+                }
+
+                const subdomain = document.getElementById('subdomain').value || 'gruda-code';
+                const targetDir = `grudge-arena-${Date.now()}`;
+
+                log('Starting deployment...', 'info');
+                setStatus('Preparing deployment...', 'info');
+                setProgress(5, 'Creating directory structure...');
+
+                await puter.fs.mkdir(targetDir);
+                log(`Created root directory: ${targetDir}`, 'success');
+
+                const directories = new Set();
+                filesToUpload.forEach(f => {
+                    const dir = f.path.split('/').slice(0, -1).join('/');
+                    if (dir) {
+                        let current = '';
+                        dir.split('/').forEach(part => {
+                            current = current ? `${current}/${part}` : part;
+                            directories.add(current);
+                        });
+                    }
+                });
+
+                setProgress(10, 'Creating subdirectories...');
+                for (const dir of directories) {
+                    try {
+                        await puter.fs.mkdir(`${targetDir}/${dir}`);
+                        log(`Created: ${dir}/`, 'info');
+                    } catch (e) {
+                    }
+                }
+
+                setProgress(15, 'Uploading files...');
+                let uploaded = 0;
+                let failed = 0;
+                const total = filesToUpload.length;
+
+                for (const fileInfo of filesToUpload) {
+                    try {
+                        const fullPath = `${targetDir}/${fileInfo.path}`;
+                        
+                        if (fileInfo.file.type.startsWith('text/') || 
+                            fileInfo.path.endsWith('.html') || 
+                            fileInfo.path.endsWith('.css') || 
+                            fileInfo.path.endsWith('.js') || 
+                            fileInfo.path.endsWith('.json') ||
+                            fileInfo.path.endsWith('.svg') ||
+                            fileInfo.path.endsWith('.md')) {
+                            const text = await fileInfo.file.text();
+                            await puter.fs.write(fullPath, text);
+                        } else {
+                            await puter.fs.write(fullPath, fileInfo.file);
+                        }
+                        
+                        uploaded++;
+                        const pct = 15 + (uploaded / total) * 70;
+                        setProgress(pct, `Uploading: ${fileInfo.path} (${uploaded}/${total})`);
+                        
+                        if (uploaded % 10 === 0 || uploaded === total) {
+                            log(`Uploaded ${uploaded}/${total} files...`, 'info');
+                        }
+                    } catch (e) {
+                        failed++;
+                        log(`Failed: ${fileInfo.path} - ${e.message}`, 'error');
+                    }
+                }
+
+                if (failed > 0) {
+                    log(`Warning: ${failed} files failed to upload`, 'warn');
+                }
+
+                setProgress(90, 'Creating hosting...');
+                log('Setting up hosting...', 'info');
+
+                try {
+                    const existingSites = await puter.hosting.list();
+                    const existing = existingSites.find(s => s.subdomain === subdomain);
+                    
+                    if (existing) {
+                        await puter.hosting.update(subdomain, targetDir);
+                        log('Updated existing site', 'success');
+                    } else {
+                        await puter.hosting.create(subdomain, targetDir);
+                        log('Created new site', 'success');
+                    }
+                } catch (e) {
+                    try {
+                        await puter.hosting.create(subdomain, targetDir);
+                        log('Created hosting', 'success');
+                    } catch (e2) {
+                        throw new Error(`Hosting setup failed: ${e2.message}`);
+                    }
+                }
+
+                setProgress(100, 'Complete!');
+
+                const siteUrl = `https://${subdomain}.puter.site`;
+                setStatus(`Deployed successfully! Live at: ${siteUrl}`, 'success');
+                log(`Site live at: ${siteUrl}`, 'success');
+                log(`Uploaded ${uploaded} files to Puter`, 'success');
+
+                setTimeout(() => {
+                    if (confirm(`Deployment complete!\n\n${uploaded} files uploaded.\n\nOpen ${siteUrl}?`)) {
+                        window.open(siteUrl, '_blank');
+                    }
+                }, 500);
+
+            } catch (error) {
+                setStatus(`Deployment failed: ${error.message}`, 'error');
+                log(`Error: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                deployBtn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            log('Grudge Studio Puter Deploy Tool ready', 'info');
+            log('1. Select your dist/ folder using the file picker', 'info');
+            log('2. Click "Deploy to Puter" to upload', 'info');
+        });
+    </script>
+</body>
+</html>

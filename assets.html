@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRUDGE Studio - AI Asset Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            border-bottom: 1px solid #0f3460;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #eee;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 320px;
+            background: #16213e;
+            border-right: 1px solid #0f3460;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #0f3460;
+        }
+        
+        .sidebar-header h3 {
+            font-size: 0.875rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #0f3460;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.875rem;
+        }
+        
+        .asset-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .asset-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .asset-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .asset-item.selected {
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+        }
+        
+        .asset-icon {
+            width: 40px;
+            height: 40px;
+            background: #0f3460;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .asset-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .asset-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .asset-meta {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        
+        .viewer-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0a0a1a;
+        }
+        
+        #viewer {
+            flex: 1;
+            position: relative;
+        }
+        
+        .ai-panel {
+            height: 200px;
+            background: #16213e;
+            border-top: 1px solid #0f3460;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ai-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #0f3460;
+        }
+        
+        .ai-panel-header h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e94560;
+        }
+        
+        .ai-input-container {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem;
+        }
+        
+        .ai-input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #0f3460;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.875rem;
+        }
+        
+        .ai-btn {
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .ai-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .ai-output {
+            flex: 1;
+            padding: 0.75rem;
+            overflow-y: auto;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .ai-output pre {
+            background: rgba(0,0,0,0.3);
+            padding: 0.75rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(22, 33, 62, 0.95);
+            padding: 1rem;
+            border-radius: 8px;
+            min-width: 220px;
+            z-index: 10;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .info-label {
+            color: #888;
+        }
+        
+        .controls-panel {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(22, 33, 62, 0.95);
+            padding: 0.5rem;
+            border-radius: 8px;
+            z-index: 10;
+        }
+        
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .dropzone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 10, 26, 0.95);
+            z-index: 20;
+        }
+        
+        .dropzone.hidden {
+            display: none;
+        }
+        
+        .dropzone-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.6;
+        }
+        
+        .dropzone-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dropzone-subtitle {
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-btn {
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .category-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        
+        .category-character { background: #e94560; }
+        .category-weapon { background: #ff8c00; }
+        .category-environment { background: #4caf50; }
+        .category-prop { background: #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <a href="/" class="logo">
+                <div class="logo-icon">G</div>
+                <span class="logo-text">GRUDGE Asset Manager</span>
+            </a>
+            <nav class="nav-links">
+                <a href="/">Arena Game</a>
+                <a href="/playground.html">Playground</a>
+                <a href="/viewer.html">3D Viewer</a>
+                <a href="/assets.html" class="active">Assets</a>
+            </nav>
+        </header>
+        
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Project Assets</h3>
+                    <input type="text" class="search-box" id="asset-search" placeholder="Search assets...">
+                </div>
+                <div class="asset-list" id="asset-list"></div>
+            </aside>
+            
+            <div class="viewer-container">
+                <div id="viewer">
+                    <div class="dropzone" id="dropzone">
+                        <div class="dropzone-icon">📦</div>
+                        <div class="dropzone-title">Drop Assets Here</div>
+                        <div class="dropzone-subtitle">Or select from the sidebar</div>
+                        <button class="upload-btn" id="upload-btn">Upload New Asset</button>
+                    </div>
+                    
+                    <div class="info-panel" id="info-panel" style="display: none;">
+                        <div class="info-row">
+                            <span class="info-label">Category:</span>
+                            <span id="info-category">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Meshes:</span>
+                            <span id="info-meshes">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Vertices:</span>
+                            <span id="info-vertices">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Triangles:</span>
+                            <span id="info-triangles">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Bones:</span>
+                            <span id="info-bones">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Animations:</span>
+                            <span id="info-animations">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="controls-panel">
+                        <button class="control-btn" id="btn-reset" title="Reset View">🔄</button>
+                        <button class="control-btn" id="btn-wireframe" title="Wireframe">🔲</button>
+                        <button class="control-btn" id="btn-skeleton" title="Skeleton">🦴</button>
+                        <button class="control-btn" id="btn-analyze" title="AI Analyze">🤖</button>
+                    </div>
+                </div>
+                
+                <div class="ai-panel">
+                    <div class="ai-panel-header">
+                        <h4>🤖 AI Asset Assistant</h4>
+                    </div>
+                    <div class="ai-input-container">
+                        <input type="text" class="ai-input" id="ai-input" placeholder="Ask about this asset or describe what you need...">
+                        <button class="ai-btn" id="ai-ask">Ask AI</button>
+                    </div>
+                    <div class="ai-output" id="ai-output">
+                        <p style="color: #888;">Select an asset and ask questions like:</p>
+                        <ul style="color: #666; margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>"How do I use this as a player character?"</li>
+                            <li>"What's the best scale for this weapon?"</li>
+                            <li>"Generate import code for this model"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <input type="file" id="file-input" accept=".glb,.gltf,.fbx,.obj" style="display: none;">
+    
+    <script type="module" src="/src/assets/main.js"></script>
+</body>
+</html>

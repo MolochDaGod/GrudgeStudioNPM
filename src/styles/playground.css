@@ -1,0 +1,419 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #1a1a2e;
+  color: #eee;
+}
+
+.webgl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+#playground-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#playground-ui > * {
+  pointer-events: auto;
+}
+
+.toolbar {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  background: rgba(22, 33, 62, 0.95);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(233, 69, 96, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 4px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 6px;
+}
+
+.tool-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.tool-btn.active {
+  background: rgba(233, 69, 96, 0.4);
+  border-color: #e94560;
+}
+
+.sidebar {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  width: 280px;
+  max-height: calc(100vh - 120px);
+  background: rgba(22, 33, 62, 0.95);
+  border-radius: 10px;
+  border: 1px solid rgba(233, 69, 96, 0.3);
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.sidebar-section h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+
+.tree-view {
+  font-size: 13px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.tree-item {
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tree-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tree-item.selected {
+  background: rgba(233, 69, 96, 0.3);
+}
+
+.inspector-panel {
+  font-size: 13px;
+}
+
+.inspector-panel .placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+.inspector-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.inspector-row label {
+  width: 70px;
+  color: #888;
+  font-size: 11px;
+}
+
+.inspector-row input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.inspector-row input[type="number"] {
+  width: 60px;
+}
+
+.layer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.layer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.layer-item input[type="checkbox"] {
+  accent-color: #e94560;
+}
+
+.ai-nav-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-btn {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.control-btn.ai-btn {
+  background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+  border: none;
+}
+
+.bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(22, 33, 62, 0.95);
+  border-top: 1px solid rgba(233, 69, 96, 0.3);
+  font-size: 12px;
+  color: #888;
+}
+
+.info-section, .controls-info {
+  display: flex;
+  gap: 20px;
+}
+
+.back-link {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 8px 16px;
+  background: rgba(22, 33, 62, 0.95);
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid rgba(233, 69, 96, 0.3);
+}
+
+.back-link:hover {
+  background: rgba(233, 69, 96, 0.3);
+}
+
+.ai-chat-panel {
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+  width: 350px;
+  height: 400px;
+  background: rgba(22, 33, 62, 0.98);
+  border-radius: 12px;
+  border: 1px solid rgba(233, 69, 96, 0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.ai-chat-panel.hidden {
+  display: none;
+}
+
+.ai-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e94560;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.ai-chat-messages {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ai-message {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.ai-message.user {
+  background: rgba(233, 69, 96, 0.3);
+  margin-left: 20px;
+}
+
+.ai-message.assistant {
+  background: rgba(255, 255, 255, 0.1);
+  margin-right: 20px;
+}
+
+.ai-chat-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai-chat-input input {
+  flex: 1;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.ai-chat-input button {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+/* Terrain Controls */
+.terrain-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-row label {
+  width: 80px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.control-row input[type="number"] {
+  flex: 1;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.control-row input[type="number"]:focus {
+  outline: none;
+  border-color: #e94560;
+}
+
+/* Sculpt mode indicators */
+.sculpt-indicator {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 33, 62, 0.95);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  gap: 16px;
+  border: 1px solid rgba(100, 100, 150, 0.3);
+}
+
+.sculpt-indicator .mode {
+  color: #00ff88;
+  font-weight: bold;
+}
+
+.sculpt-indicator .key {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+}

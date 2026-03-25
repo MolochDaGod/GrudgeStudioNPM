@@ -1,0 +1,10 @@
+node_modules
+attached_assets/
+dist/
+.config/
+.local/
+.DS_Store
+*.log
+npm-debug.log*
+.env
+.env.local

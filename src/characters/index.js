@@ -1,0 +1,5 @@
+export { ModularCharacterSystem, modularCharacterSystem, BONE_HIERARCHY, BODY_SLOTS, STANDARD_ANIMATIONS } from './ModularCharacterSystem.js'
+export { CharacterAssembler, createCharacterFromConfig } from './CharacterAssembler.js'
+export { AssetLoader, assetLoader } from './AssetLoader.js'
+export { CharacterConfigManager, characterConfigManager, CHARACTER_PRESETS } from './CharacterConfig.js'
+export { CharacterFactory, characterFactory } from './CharacterFactory.js'

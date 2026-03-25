@@ -1,0 +1,764 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-12-10",
+  "categories": {
+    "characters": {
+      "description": "Playable characters and NPCs for arena combat",
+      "aiUseCases": ["Combat AI opponents", "Player avatars", "NPC population", "Training dummies"]
+    },
+    "vehicles": {
+      "description": "Drivable vehicles with physics support",
+      "aiUseCases": ["AI driving training", "Racing games", "Transport simulation", "Traffic systems"]
+    },
+    "environments": {
+      "description": "Arena environments and level geometry",
+      "aiUseCases": ["Pathfinding training", "Level design AI", "Procedural placement"]
+    },
+    "animations": {
+      "description": "Character animation clips",
+      "aiUseCases": ["Animation blending AI", "Procedural animation", "Motion matching"]
+    },
+    "textures": {
+      "description": "Material textures and maps",
+      "aiUseCases": ["Style transfer", "Material generation", "Texture synthesis"]
+    }
+  },
+  "assets": [
+    {
+      "id": "arena-main",
+      "name": "Arena",
+      "category": "environments",
+      "path": "models/arena.glb",
+      "format": "glb",
+      "description": "Main fighting arena with walls, floors, and props",
+      "tags": ["arena", "combat", "environment", "gladiator"],
+      "aiUseCases": {
+        "primary": "Combat environment for AI training",
+        "applications": [
+          "Reinforcement learning arena for combat AI",
+          "Pathfinding and navigation mesh generation",
+          "Cover-based AI behavior training",
+          "Spawn point optimization"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["spatial", "navigation", "collision"]
+        }
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasColliders": true,
+        "hasLOD": false,
+        "animated": false
+      }
+    },
+    {
+      "id": "gladiator",
+      "name": "Gladiator",
+      "category": "characters",
+      "path": "models/gladiator.glb",
+      "format": "glb",
+      "description": "Roman gladiator fighter with armor and weapons",
+      "tags": ["gladiator", "fighter", "roman", "melee", "humanoid"],
+      "aiUseCases": {
+        "primary": "Melee combat AI agent",
+        "applications": [
+          "Close-range combat behavior learning",
+          "Weapon timing and spacing AI",
+          "Defensive stance and blocking patterns",
+          "Crowd-pleasing behavior modeling"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["combat", "animation", "behavior"]
+        }
+      },
+      "stats": {
+        "strength": 16,
+        "dexterity": 14,
+        "constitution": 15,
+        "attackStyle": "melee",
+        "weaponType": "sword_shield"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasRig": true,
+        "animated": true,
+        "colliderType": "capsule"
+      }
+    },
+    {
+      "id": "gladiator-pose",
+      "name": "Gladiator (Posed)",
+      "category": "characters",
+      "path": "models/gladiator-pose.glb",
+      "format": "glb",
+      "description": "Gladiator in victory pose for UI/selection screens",
+      "tags": ["gladiator", "pose", "ui", "selection"],
+      "aiUseCases": {
+        "primary": "Character selection UI display",
+        "applications": [
+          "UI thumbnail generation",
+          "Character preview rendering",
+          "Style reference for pose generation"
+        ],
+        "trainingData": {
+          "suitable": false,
+          "reason": "Static pose, not suitable for behavior training"
+        }
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasRig": false,
+        "animated": false
+      }
+    },
+    {
+      "id": "dragon",
+      "name": "Dragon",
+      "category": "characters",
+      "path": "models/dragon.glb",
+      "format": "glb",
+      "description": "Flying dragon creature for boss encounters",
+      "tags": ["dragon", "boss", "flying", "creature", "fantasy"],
+      "aiUseCases": {
+        "primary": "Boss AI with flying behavior",
+        "applications": [
+          "Flying combat AI patterns",
+          "Area denial and breath attacks",
+          "Multi-phase boss behavior",
+          "Aerial pathfinding"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["combat", "flying", "boss_ai"]
+        }
+      },
+      "stats": {
+        "strength": 22,
+        "dexterity": 18,
+        "constitution": 25,
+        "attackStyle": "ranged_melee",
+        "abilities": ["fire_breath", "tail_sweep", "dive_attack"]
+      },
+      "technical": {
+        "polyCount": "high",
+        "hasRig": true,
+        "animated": true,
+        "colliderType": "compound"
+      }
+    },
+    {
+      "id": "wolf",
+      "name": "Shadow Wolf",
+      "category": "characters",
+      "path": "models/characters/wolf/scene.gltf",
+      "format": "gltf",
+      "description": "Quadruped wolf creature for pack-based AI",
+      "tags": ["wolf", "creature", "quadruped", "pack", "animal"],
+      "aiUseCases": {
+        "primary": "Pack hunting AI behavior",
+        "applications": [
+          "Swarm/pack coordination algorithms",
+          "Flanking and encirclement tactics",
+          "Quadruped locomotion AI",
+          "Predator-prey dynamics"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["swarm", "coordination", "hunting"]
+        }
+      },
+      "stats": {
+        "strength": 12,
+        "dexterity": 18,
+        "constitution": 10,
+        "attackStyle": "melee",
+        "abilities": ["pack_bonus", "howl", "pounce"]
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasRig": true,
+        "animated": true,
+        "colliderType": "capsule",
+        "textureFolder": "models/characters/wolf/textures/"
+      }
+    },
+    {
+      "id": "viking",
+      "name": "Viking Warrior",
+      "category": "characters",
+      "path": "models/characters/viking/scene.gltf",
+      "format": "gltf",
+      "description": "Norse viking warrior with shield and axe",
+      "tags": ["viking", "warrior", "melee", "humanoid", "norse"],
+      "aiUseCases": {
+        "primary": "Defensive melee combat AI",
+        "applications": [
+          "Shield-based defensive AI patterns",
+          "Counter-attack timing learning",
+          "Stamina management AI",
+          "Aggressive vs defensive stance switching"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["combat", "defense", "timing"]
+        }
+      },
+      "stats": {
+        "strength": 17,
+        "dexterity": 12,
+        "constitution": 18,
+        "attackStyle": "melee",
+        "weaponType": "axe_shield"
+      },
+      "technical": {
+        "polyCount": "high",
+        "hasRig": true,
+        "animated": true,
+        "colliderType": "capsule",
+        "textureFolder": "models/characters/viking/textures/"
+      }
+    },
+    {
+      "id": "orc",
+      "name": "Orc Warrior",
+      "category": "characters",
+      "path": "models/characters/orc/scene.gltf",
+      "format": "gltf",
+      "description": "Armored orc brute for heavy combat",
+      "tags": ["orc", "warrior", "heavy", "humanoid", "fantasy"],
+      "aiUseCases": {
+        "primary": "Heavy/tank combat AI",
+        "applications": [
+          "High damage, slow attack patterns",
+          "Aggro management and threat AI",
+          "Charging and gap-closing behavior",
+          "Pain threshold and rage mechanics"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["combat", "tank", "aggression"]
+        }
+      },
+      "stats": {
+        "strength": 20,
+        "dexterity": 8,
+        "constitution": 22,
+        "attackStyle": "melee",
+        "weaponType": "two_handed"
+      },
+      "technical": {
+        "polyCount": "high",
+        "hasRig": true,
+        "animated": true,
+        "colliderType": "capsule",
+        "textureFolder": "models/characters/orc/textures/"
+      }
+    },
+    {
+      "id": "shepherd",
+      "name": "Shepherd",
+      "category": "characters",
+      "path": "models/characters/shepherd/scene.gltf",
+      "format": "gltf",
+      "description": "Staff-wielding shepherd character",
+      "tags": ["shepherd", "staff", "support", "humanoid"],
+      "aiUseCases": {
+        "primary": "Support/utility AI role",
+        "applications": [
+          "Ally protection behavior",
+          "Healing/buff decision making",
+          "Positioning for team support",
+          "Crowd control abilities"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["support", "positioning", "ally_awareness"]
+        }
+      },
+      "stats": {
+        "strength": 10,
+        "dexterity": 14,
+        "constitution": 12,
+        "attackStyle": "melee",
+        "role": "support"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasRig": true,
+        "animated": true
+      }
+    },
+    {
+      "id": "toon-character",
+      "name": "Toon Fighter",
+      "category": "characters",
+      "path": "models/characters/toon_character.glb",
+      "format": "glb",
+      "description": "Stylized cartoon character for casual games",
+      "tags": ["toon", "cartoon", "stylized", "humanoid"],
+      "aiUseCases": {
+        "primary": "Casual game AI behaviors",
+        "applications": [
+          "Exaggerated movement patterns",
+          "Expressive emotion-based AI",
+          "Child-friendly combat pacing",
+          "Party game behaviors"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["casual", "expression", "timing"]
+        }
+      },
+      "technical": {
+        "polyCount": "low",
+        "hasRig": true,
+        "animated": true,
+        "style": "stylized"
+      }
+    },
+    {
+      "id": "base-character",
+      "name": "Base Character",
+      "category": "characters",
+      "path": "models/characters/base_character.glb",
+      "format": "glb",
+      "description": "Rigged humanoid base for modular customization",
+      "tags": ["base", "template", "modular", "humanoid"],
+      "aiUseCases": {
+        "primary": "Foundation for procedural character generation",
+        "applications": [
+          "Procedural outfit/accessory placement",
+          "Animation retargeting base",
+          "Body proportion variations",
+          "Equipment slot system"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["procedural", "generation", "customization"]
+        }
+      },
+      "technical": {
+        "polyCount": "low",
+        "hasRig": true,
+        "animated": true,
+        "modular": true
+      }
+    },
+    {
+      "id": "swimmer",
+      "name": "Aqua Warrior",
+      "category": "characters",
+      "path": "models/characters/swimmer.glb",
+      "format": "glb",
+      "description": "Aquatic-themed fighter for water environments",
+      "tags": ["swimmer", "aquatic", "water", "humanoid"],
+      "aiUseCases": {
+        "primary": "Water/amphibious combat AI",
+        "applications": [
+          "Underwater movement AI",
+          "Surface vs underwater tactics",
+          "Environment-aware combat",
+          "Speed advantage in water"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["environment", "movement", "tactical"]
+        }
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasRig": true,
+        "animated": true
+      }
+    },
+    {
+      "id": "sedan",
+      "name": "Sedan",
+      "category": "vehicles",
+      "path": "models/vehicles/Car.glb",
+      "format": "glb",
+      "description": "Standard sedan for city driving",
+      "tags": ["car", "sedan", "city", "vehicle"],
+      "aiUseCases": {
+        "primary": "Urban driving AI training",
+        "applications": [
+          "Traffic simulation AI",
+          "Lane keeping and following",
+          "Parking algorithms",
+          "Defensive driving patterns"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["driving", "traffic", "navigation"]
+        }
+      },
+      "physics": {
+        "mass": 1200,
+        "maxSpeed": 180,
+        "acceleration": "moderate",
+        "handling": "balanced"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasWheels": true,
+        "wheelCount": 4
+      }
+    },
+    {
+      "id": "sports-car",
+      "name": "Sports Car",
+      "category": "vehicles",
+      "path": "models/vehicles/SportsCar.glb",
+      "format": "glb",
+      "description": "High-performance sports car for racing",
+      "tags": ["car", "sports", "racing", "vehicle", "fast"],
+      "aiUseCases": {
+        "primary": "Racing AI and high-speed control",
+        "applications": [
+          "Racing line optimization",
+          "Drift and oversteer recovery",
+          "Opponent overtaking strategies",
+          "Time trial optimization"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["racing", "performance", "control"]
+        }
+      },
+      "physics": {
+        "mass": 1000,
+        "maxSpeed": 280,
+        "acceleration": "high",
+        "handling": "sharp"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasWheels": true,
+        "wheelCount": 4
+      }
+    },
+    {
+      "id": "sports-car-2",
+      "name": "Sports Car 2",
+      "category": "vehicles",
+      "path": "models/vehicles/SportsCar2.glb",
+      "format": "glb",
+      "description": "Alternative sports car variant",
+      "tags": ["car", "sports", "racing", "vehicle", "variant"],
+      "aiUseCases": {
+        "primary": "Racing AI variety and opponent types",
+        "applications": [
+          "AI opponent variation",
+          "Different handling characteristics",
+          "Visual variety in races"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["racing", "variety"]
+        }
+      },
+      "physics": {
+        "mass": 1050,
+        "maxSpeed": 270,
+        "acceleration": "high",
+        "handling": "responsive"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasWheels": true,
+        "wheelCount": 4
+      }
+    },
+    {
+      "id": "suv",
+      "name": "SUV",
+      "category": "vehicles",
+      "path": "models/vehicles/SUV.glb",
+      "format": "glb",
+      "description": "Sport utility vehicle for off-road",
+      "tags": ["car", "suv", "offroad", "vehicle", "utility"],
+      "aiUseCases": {
+        "primary": "Off-road and terrain navigation AI",
+        "applications": [
+          "Terrain traversal decision making",
+          "Obstacle avoidance on rough terrain",
+          "Weight distribution awareness",
+          "All-wheel drive optimization"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["offroad", "terrain", "navigation"]
+        }
+      },
+      "physics": {
+        "mass": 1800,
+        "maxSpeed": 160,
+        "acceleration": "moderate",
+        "handling": "stable"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasWheels": true,
+        "wheelCount": 4
+      }
+    },
+    {
+      "id": "taxi",
+      "name": "Taxi",
+      "category": "vehicles",
+      "path": "models/vehicles/Taxi.glb",
+      "format": "glb",
+      "description": "City taxi for passenger transport",
+      "tags": ["car", "taxi", "city", "vehicle", "service"],
+      "aiUseCases": {
+        "primary": "Passenger pickup/dropoff AI",
+        "applications": [
+          "Route optimization to destinations",
+          "Passenger detection and approach",
+          "Traffic-aware navigation",
+          "Meter and fare calculations"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["service", "navigation", "passenger"]
+        }
+      },
+      "physics": {
+        "mass": 1300,
+        "maxSpeed": 160,
+        "acceleration": "moderate",
+        "handling": "comfortable"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasWheels": true,
+        "wheelCount": 4
+      }
+    },
+    {
+      "id": "police-car",
+      "name": "Police Car",
+      "category": "vehicles",
+      "path": "models/vehicles/PoliceCar.glb",
+      "format": "glb",
+      "description": "Law enforcement vehicle for pursuit",
+      "tags": ["car", "police", "pursuit", "vehicle", "emergency"],
+      "aiUseCases": {
+        "primary": "Pursuit and interception AI",
+        "applications": [
+          "Target pursuit algorithms",
+          "Roadblock positioning",
+          "Coordinated pursuit tactics",
+          "PIT maneuver execution"
+        ],
+        "trainingData": {
+          "suitable": true,
+          "dataTypes": ["pursuit", "tactical", "coordination"]
+        }
+      },
+      "physics": {
+        "mass": 1400,
+        "maxSpeed": 220,
+        "acceleration": "high",
+        "handling": "pursuit"
+      },
+      "technical": {
+        "polyCount": "medium",
+        "hasWheels": true,
+        "wheelCount": 4,
+        "hasLights": true
+      }
+    }
+  ],
+  "animations": [
+    {
+      "id": "spartan-idle",
+      "name": "Spartan Idle",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@idle.fbx",
+      "format": "fbx",
+      "description": "Standing idle animation for spartan character",
+      "tags": ["idle", "spartan", "loop"],
+      "aiUseCases": {
+        "primary": "Idle state detection and variation",
+        "applications": ["Idle behavior variety", "State machine transitions"]
+      },
+      "technical": {
+        "duration": 2.0,
+        "loop": true,
+        "fps": 30
+      }
+    },
+    {
+      "id": "spartan-walk",
+      "name": "Spartan Walk",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@walk.fbx",
+      "format": "fbx",
+      "description": "Walking locomotion animation",
+      "tags": ["walk", "locomotion", "spartan", "loop"],
+      "aiUseCases": {
+        "primary": "Movement speed matching",
+        "applications": ["Locomotion blending", "Speed-based animation selection"]
+      },
+      "technical": {
+        "duration": 1.0,
+        "loop": true,
+        "fps": 30
+      }
+    },
+    {
+      "id": "spartan-run",
+      "name": "Spartan Run",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@run.fbx",
+      "format": "fbx",
+      "description": "Running locomotion animation",
+      "tags": ["run", "locomotion", "spartan", "loop"],
+      "aiUseCases": {
+        "primary": "High-speed pursuit/escape behavior",
+        "applications": ["Chase AI", "Flee behavior", "Sprint management"]
+      },
+      "technical": {
+        "duration": 0.8,
+        "loop": true,
+        "fps": 30
+      }
+    },
+    {
+      "id": "spartan-attack1",
+      "name": "Spartan Attack 1",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@attack_1.fbx",
+      "format": "fbx",
+      "description": "Primary attack swing animation",
+      "tags": ["attack", "combat", "spartan"],
+      "aiUseCases": {
+        "primary": "Combat timing and hitbox activation",
+        "applications": ["Attack decision timing", "Combo system AI", "Hit detection windows"]
+      },
+      "technical": {
+        "duration": 0.6,
+        "loop": false,
+        "fps": 30,
+        "hitFrames": [15, 18]
+      }
+    },
+    {
+      "id": "spartan-attack2",
+      "name": "Spartan Attack 2",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@attack_2.fbx",
+      "format": "fbx",
+      "description": "Secondary attack animation for combos",
+      "tags": ["attack", "combat", "spartan", "combo"],
+      "aiUseCases": {
+        "primary": "Combo chain decision making",
+        "applications": ["Combo execution AI", "Attack variety selection"]
+      },
+      "technical": {
+        "duration": 0.7,
+        "loop": false,
+        "fps": 30,
+        "hitFrames": [12, 20]
+      }
+    },
+    {
+      "id": "spartan-block",
+      "name": "Spartan Block",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@block.fbx",
+      "format": "fbx",
+      "description": "Defensive blocking stance",
+      "tags": ["block", "defense", "spartan"],
+      "aiUseCases": {
+        "primary": "Defensive reaction timing",
+        "applications": ["Block prediction AI", "Defense vs attack decision", "Stamina cost evaluation"]
+      },
+      "technical": {
+        "duration": 0.4,
+        "loop": true,
+        "fps": 30
+      }
+    },
+    {
+      "id": "spartan-hit",
+      "name": "Spartan Hit Damage",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@hit_damage.fbx",
+      "format": "fbx",
+      "description": "Reaction to taking damage",
+      "tags": ["hit", "damage", "reaction", "spartan"],
+      "aiUseCases": {
+        "primary": "Stagger recovery decision making",
+        "applications": ["Recovery frame exploitation", "Combo break timing"]
+      },
+      "technical": {
+        "duration": 0.5,
+        "loop": false,
+        "fps": 30,
+        "vulnerableFrames": [0, 15]
+      }
+    },
+    {
+      "id": "spartan-death",
+      "name": "Spartan Death",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@death.fbx",
+      "format": "fbx",
+      "description": "Character death animation",
+      "tags": ["death", "defeat", "spartan"],
+      "aiUseCases": {
+        "primary": "Terminal state handling",
+        "applications": ["Match end detection", "Respawn trigger"]
+      },
+      "technical": {
+        "duration": 2.0,
+        "loop": false,
+        "fps": 30
+      }
+    },
+    {
+      "id": "spartan-jump",
+      "name": "Spartan Jump",
+      "category": "animations",
+      "path": "models/characters/spartan/Animations/Spartan@jump.fbx",
+      "format": "fbx",
+      "description": "Vertical jump animation",
+      "tags": ["jump", "movement", "spartan"],
+      "aiUseCases": {
+        "primary": "Vertical movement decision",
+        "applications": ["Platform navigation AI", "Jump attack timing", "Obstacle clearing"]
+      },
+      "technical": {
+        "duration": 1.2,
+        "loop": false,
+        "fps": 30
+      }
+    }
+  ],
+  "aiCapabilities": {
+    "combatAI": {
+      "description": "AI for fighting game opponents",
+      "supportedAssets": ["gladiator", "viking", "orc", "shepherd", "toon-character"],
+      "algorithms": ["Finite State Machine", "Behavior Tree", "Q-Learning", "MCTS"]
+    },
+    "vehicleAI": {
+      "description": "AI for vehicle control and racing",
+      "supportedAssets": ["sedan", "sports-car", "suv", "taxi", "police-car"],
+      "algorithms": ["Q-Learning", "Deep Q-Network", "Waypoint Navigation", "PID Control"]
+    },
+    "creatureAI": {
+      "description": "AI for non-humanoid creatures",
+      "supportedAssets": ["dragon", "wolf"],
+      "algorithms": ["Swarm Intelligence", "Hierarchical FSM", "GOAP"]
+    },
+    "proceduralGeneration": {
+      "description": "AI-assisted content generation",
+      "supportedAssets": ["base-character", "arena-main"],
+      "algorithms": ["WFC", "L-Systems", "Neural Style Transfer"]
+    }
+  }
+}
