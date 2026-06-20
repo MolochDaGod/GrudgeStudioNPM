@@ -1,4 +1,5 @@
 import { GameState } from '../core/GameState.js'
+import { appUrl } from '../lib/appUrl.js'
 
 export class UIManager {
   constructor() {
@@ -44,23 +45,23 @@ export class UIManager {
     })
     
     document.getElementById('btn-playground')?.addEventListener('click', () => {
-      window.location.href = '/playground.html'
+      window.location.href = appUrl('playground.html')
     })
     
     document.getElementById('btn-builder')?.addEventListener('click', () => {
-      window.location.href = '/character-builder.html'
+      window.location.href = appUrl('character-builder.html')
     })
 
     document.getElementById('btn-skills')?.addEventListener('click', () => {
-      window.location.href = '/skill-tree.html'
+      window.location.href = appUrl('skill-tree.html')
     })
     
     document.getElementById('btn-viewer')?.addEventListener('click', () => {
-      window.location.href = '/viewer.html'
+      window.location.href = appUrl('viewer.html')
     })
     
     document.getElementById('btn-assets')?.addEventListener('click', () => {
-      window.location.href = '/assets.html'
+      window.location.href = appUrl('assets.html')
     })
     
     document.getElementById('btn-resume')?.addEventListener('click', () => {

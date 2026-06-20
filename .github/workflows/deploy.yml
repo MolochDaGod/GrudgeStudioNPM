@@ -30,8 +30,14 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Build
+      - name: Build for project Pages
         run: npm run build
+
+      - name: Notify user Pages rebuild
+        run: gh api repos/MolochDaGod/MolochDaGod.github.io/dispatches -f event_type=rebuild-playground
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

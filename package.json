@@ -6,7 +6,8 @@
   "description": "Grudge Playground - Canonical game development SDK and editor for the Grudge Studio ecosystem",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5000",
-    "build": "vite build",
+    "build": "vite build --mode pages",
+    "build:root": "vite build --mode root",
     "preview": "vite preview --host 0.0.0.0 --port 5000",
     "start": "vite preview --host 0.0.0.0 --port 5000",
     "deploy:check": "node scripts/deploy-puter.js",
