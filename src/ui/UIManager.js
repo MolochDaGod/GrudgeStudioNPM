@@ -61,6 +61,10 @@ export class UIManager {
       if (this.callbacks.onWorldBuilder) this.callbacks.onWorldBuilder()
     })
 
+    document.getElementById('btn-warlord')?.addEventListener('click', () => {
+      window.open(HUB_LINKS.warlordGenesis, '_blank', 'noopener,noreferrer')
+    })
+
     document.getElementById('btn-ground-rts')?.addEventListener('click', () => {
       window.open(HUB_LINKS.groundRts, '_blank', 'noopener,noreferrer')
     })

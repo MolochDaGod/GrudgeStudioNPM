@@ -7,6 +7,8 @@ export const ASSET_CDN = 'https://assets.grudge-studio.com'
 
 export const HUB_LINKS = {
   groundRts: 'https://grudge-space-rts.vercel.app/ground-rts',
+  warlordGenesis: 'https://warlord-genesis.vercel.app/play',
+  warlordGenesisHub: 'https://warlord-genesis.vercel.app/',
   characterViewer: 'https://character.grudge-studio.com/viewer',
   assetCdn: ASSET_CDN,
   r2Paths: {

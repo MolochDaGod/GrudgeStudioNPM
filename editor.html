@@ -130,6 +130,9 @@
         <button id="btn-save" title="Save Scene (Ctrl+S)">💾 Save</button>
         <button id="btn-export" title="Export GLTF">📦 Export</button>
         <button id="btn-network" title="Grudge Network">🌐</button>
+        <div class="sep"></div>
+        <button id="btn-warlord" title="Warlord Genesis MOBA">⚔️ Warlords</button>
+        <button id="btn-ground-rts" title="Hero Ground RTS Hub">🗺️ RTS</button>
       </div>
 
       <!-- Body -->
@@ -170,6 +173,15 @@
       </div>
     </div>
 
+    <script type="module">
+      import { HUB_LINKS } from './grudge-studio/hub/links.js';
+      document.getElementById('btn-warlord')?.addEventListener('click', () => {
+        window.open(HUB_LINKS.warlordGenesis, '_blank', 'noopener,noreferrer');
+      });
+      document.getElementById('btn-ground-rts')?.addEventListener('click', () => {
+        window.open(HUB_LINKS.groundRts, '_blank', 'noopener,noreferrer');
+      });
+    </script>
     <script type="module" src="/src/editor/EditorApp.js"></script>
   </body>
 </html>
