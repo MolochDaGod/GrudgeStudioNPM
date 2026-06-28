@@ -486,14 +486,83 @@
             border: 1px solid var(--border);
         }
 
+        .race-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .race-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .race-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: rgba(0,0,0,0.25);
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .race-option:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .race-option.active {
+            color: #fff;
+            border-color: var(--race-color);
+            background: color-mix(in srgb, var(--race-color) 35%, transparent);
+            box-shadow: 0 0 12px color-mix(in srgb, var(--race-color) 40%, transparent);
+        }
+
+        .race-hint {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .canonical-class {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.25);
+            font-size: 0.85rem;
+        }
+
+        .prof-affinity {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .prof-affinity span {
+            display: inline-block;
+            margin: 2px 4px 2px 0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
         @media (max-width: 1200px) { 
             .container, .prof-container { grid-template-columns: 1fr; }
             .items-resources-grid { grid-template-columns: 1fr; }
         }
     </style>
-  <script type="module" crossorigin src="/assets/characterBuilder-BX5Hu9qQ.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/assets/StatsUtils-Dj8vluZS.js">
+  <script type="module" crossorigin src="/GrudgeStudioNPM/assets/characterBuilder-DM0ubA7e.js"></script>
+  <link rel="modulepreload" crossorigin href="/GrudgeStudioNPM/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/GrudgeStudioNPM/assets/StatsUtils-Dj8vluZS.js">
+  <link rel="modulepreload" crossorigin href="/GrudgeStudioNPM/assets/races-DPsLicJ_.js">
+  <link rel="modulepreload" crossorigin href="/GrudgeStudioNPM/assets/classes-BOaWg7IU.js">
 </head>
 <body>
     <a href="index.html" class="back-btn">Back to Game</a>
@@ -516,6 +585,13 @@
     <div id="character-tab" class="tab-content active">
         <div class="container">
             <div class="panel">
+                <div class="race-section">
+                    <h2 class="font-cinzel">GRUDGE 6 Race</h2>
+                    <div id="racePicker" class="race-grid"></div>
+                    <p id="raceHint" class="race-hint">Select your canonical champion race.</p>
+                    <div id="canonicalClass" class="canonical-class"></div>
+                </div>
+
                 <h2 class="font-cinzel">Attributes</h2>
                 <div class="diminishing-info" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.8rem;">
                     <div style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">Diminishing Returns System</div>
@@ -604,6 +680,7 @@
                         <div class="icon-bg" id="profIconBg">&#9935;</div>
                         <h2 id="profTitle" class="prof-title font-cinzel" style="color: var(--mining-color);">Mining</h2>
                         <p id="profDesc" class="prof-desc">Masters of ore extraction and metalworking. Mine ores, craft weapons and armor, and unlock rare mineral deposits.</p>
+                        <div id="profRaceAffinity" class="prof-affinity"></div>
                         
                         <div class="prof-stats" id="profStats">
                             <div style="color: var(--success);">ATK: +2/lvl (60+)</div>
@@ -837,12 +914,25 @@
             document.querySelectorAll('.prof-tab').forEach(btn => btn.classList.remove('active'))
             document.querySelector(`.prof-tab[data-prof="${profKey}"]`).classList.add('active')
 
+            const titleColor = canon?.color ?? data.color
             const card = document.getElementById('profCard')
-            card.style.borderColor = data.color
-            document.getElementById('profTitle').style.color = data.color
-            document.getElementById('profTitle').textContent = data.name
-            document.getElementById('profDesc').textContent = data.desc
-            document.getElementById('profIconBg').innerHTML = data.icon
+            card.style.borderColor = titleColor
+            document.getElementById('profTitle').style.color = titleColor
+            document.getElementById('profTitle').textContent = canon?.name ?? data.name
+            const canon = window.GRUDGE_PROFESSIONS?.[profKey]
+            document.getElementById('profDesc').textContent = canon?.description ?? data.desc
+            document.getElementById('profIconBg').innerHTML = canon?.icon ?? data.icon
+
+            const affinityEl = document.getElementById('profRaceAffinity')
+            if (canon?.favoredRaces?.length) {
+                const tags = canon.favoredRaces.map((id) => {
+                    const race = window.GRUDGE_RACES?.[id]
+                    return `<span style="border-color:${race?.color ?? '#475569'};color:${race?.color ?? '#e2e8f0'}">${race?.name ?? id}</span>`
+                }).join('')
+                affinityEl.innerHTML = `<strong style="color:var(--muted)">Favored races:</strong> ${tags}`
+            } else {
+                affinityEl.innerHTML = ''
+            }
 
             const statsDiv = document.getElementById('profStats')
             statsDiv.innerHTML = ''
@@ -958,8 +1048,11 @@
         window.switchProfession = switchProfession
 
         window.exportProfessionBuild = function() {
+            const canon = window.GRUDGE_PROFESSIONS?.[currentProf]
             const buildData = {
                 profession: currentProf,
+                canonical: canon ?? null,
+                raceId: localStorage.getItem('grudge_race_id') || 'barbarians',
                 points: profPoints,
                 timestamp: new Date().toISOString()
             }

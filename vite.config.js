@@ -18,7 +18,19 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: '0.0.0.0',
     port: 5000,
-    allowedHosts: true
+    allowedHosts: true,
+    proxy: {
+      '/assets': {
+        target: 'https://assets.grudge-studio.com',
+        changeOrigin: true,
+        secure: true,
+      },
+      '/anims': {
+        target: 'https://assets.grudge-studio.com',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
   },
   build: {
     outDir: 'dist',

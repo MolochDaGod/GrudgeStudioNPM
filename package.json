@@ -3,6 +3,17 @@
   "private": false,
   "version": "3.0.0",
   "type": "module",
+  "main": "./grudge-studio/canonical/index.js",
+  "exports": {
+    ".": "./grudge-studio/canonical/index.js",
+    "./kit": "./grudge-studio/kit/index.js",
+    "./canonical": "./grudge-studio/canonical/index.js"
+  },
+  "files": [
+    "grudge-studio/kit",
+    "grudge-studio/canonical",
+    "grudge-studio/stats"
+  ],
   "description": "Grudge Playground - Canonical game development SDK and editor for the Grudge Studio ecosystem",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5000",

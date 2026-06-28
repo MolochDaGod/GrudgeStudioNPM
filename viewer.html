@@ -3,444 +3,288 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grudge Studio - 3D Viewer</title>
+  <title>GRUDGE Character Viewer</title>
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Jost:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #1a1a2e;
-      color: #eee;
+      font-family: 'Jost', sans-serif;
+      background: #020617;
+      color: #e2e8f0;
     }
-    
+
     .app {
       display: flex;
       flex-direction: column;
       height: 100%;
     }
-    
+
     .header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-      border-bottom: 1px solid #0f3460;
+      gap: 12px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+      border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+      flex-shrink: 0;
+      z-index: 20;
     }
-    
-    .logo {
+
+    .brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: #eee;
+      gap: 10px;
+      flex-shrink: 0;
     }
-    
-    .logo-icon {
+
+    .brand-badge {
       width: 32px;
       height: 32px;
-      background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
-      border-radius: 8px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 18px;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 11px;
+      color: #fff;
+      background: #c2410c;
+      box-shadow: 0 0 14px rgba(194, 65, 12, 0.4);
     }
-    
-    .logo-text {
-      font-size: 1.25rem;
+
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      color: #fde68a;
+    }
+
+    .brand-sub {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: rgba(251, 191, 36, 0.6);
+    }
+
+    .divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(245, 158, 11, 0.2);
+      flex-shrink: 0;
+    }
+
+    #race-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .race-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(245, 158, 11, 0.15);
+      background: rgba(15, 23, 42, 0.5);
+      color: #94a3b8;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    
+
+    .race-chip:hover {
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    .race-chip.active {
+      color: #fff;
+      border-color: var(--race-color);
+      background: var(--race-color);
+      box-shadow: 0 0 12px color-mix(in srgb, var(--race-color) 55%, transparent);
+    }
+
+    .race-abbr { font-weight: 700; }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    #status-text {
+      font-size: 12px;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .nav-links {
       display: flex;
-      gap: 1rem;
+      gap: 8px;
     }
-    
+
     .nav-links a {
-      color: #aaa;
+      color: #94a3b8;
       text-decoration: none;
-      padding: 0.5rem 1rem;
+      font-size: 11px;
+      padding: 4px 10px;
       border-radius: 6px;
+      border: 1px solid rgba(100, 116, 139, 0.3);
       transition: all 0.2s;
     }
-    
+
     .nav-links a:hover {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.4);
     }
-    
-    .main-content {
-      flex: 1;
-      display: flex;
-      position: relative;
-    }
-    
-    .sidebar {
-      width: 280px;
-      background: #16213e;
-      border-right: 1px solid #0f3460;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-    
-    .sidebar h3 {
-      font-size: 0.875rem;
-      color: #888;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    
-    .model-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .model-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .model-item:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .model-item.active {
-      background: rgba(233, 69, 96, 0.2);
-      border: 1px solid #e94560;
-    }
-    
-    .model-icon {
-      width: 40px;
-      height: 40px;
-      background: #0f3460;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-    
-    .model-info {
-      flex: 1;
-    }
-    
-    .model-name {
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-    
-    .model-meta {
-      font-size: 0.75rem;
-      color: #888;
-    }
-    
-    .viewer-container {
+
+    .viewport {
       flex: 1;
       position: relative;
-      background: #0a0a1a;
+      background: radial-gradient(ellipse at 50% 42%, #1e293b 0%, #020617 70%);
+      overflow: hidden;
     }
-    
+
     #viewer {
-      width: 100%;
-      height: 100%;
-    }
-    
-    .dropzone {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
+    }
+
+    .controls-bar {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      background: rgba(10, 10, 26, 0.95);
+      gap: 12px;
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 10px;
       z-index: 10;
-      transition: all 0.3s;
     }
-    
-    .dropzone.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    
-    .dropzone.dragover {
-      background: rgba(233, 69, 96, 0.1);
-      border: 2px dashed #e94560;
-    }
-    
-    .dropzone-content {
-      text-align: center;
-    }
-    
-    .dropzone-icon {
-      font-size: 4rem;
-      margin-bottom: 1.5rem;
-      opacity: 0.6;
-    }
-    
-    .dropzone-title {
-      font-size: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-    
-    .dropzone-subtitle {
-      color: #888;
-      margin-bottom: 2rem;
-    }
-    
-    .open-btn {
-      padding: 0.875rem 2rem;
-      font-size: 1rem;
-      background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .open-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(233, 69, 96, 0.3);
-    }
-    
-    .formats {
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: #666;
-    }
-    
-    .controls-panel {
-      position: absolute;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 0.5rem;
-      background: rgba(22, 33, 62, 0.9);
-      padding: 0.5rem;
-      border-radius: 8px;
-      z-index: 5;
-    }
-    
-    .control-btn {
-      width: 40px;
-      height: 40px;
-      background: rgba(255,255,255,0.1);
-      border: none;
+
+    .animation-select {
+      background: #0f172a;
+      color: #fde68a;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      padding: 6px 12px;
       border-radius: 6px;
-      color: #fff;
-      cursor: pointer;
+      font-size: 12px;
+      min-width: 140px;
+    }
+
+    .toggle-label {
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
+      gap: 6px;
+      font-size: 11px;
+      color: #94a3b8;
+      cursor: pointer;
+      user-select: none;
     }
-    
-    .control-btn:hover {
-      background: rgba(255,255,255,0.2);
-    }
-    
-    .control-btn.active {
-      background: rgba(233, 69, 96, 0.4);
-      border: 1px solid #e94560;
-    }
-    
-    .info-panel {
+
+    .toggle-label input { accent-color: #f59e0b; }
+
+    #info-panel {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(22, 33, 62, 0.9);
-      padding: 1rem;
-      border-radius: 8px;
-      min-width: 200px;
-      z-index: 5;
-      display: none;
+      top: 16px;
+      right: 16px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 11px;
+      line-height: 1.6;
+      min-width: 240px;
+      z-index: 10;
+      color: #cbd5e1;
     }
-    
-    .info-panel.visible {
-      display: block;
+
+    #info-panel strong {
+      color: #fde68a;
+      font-weight: 600;
     }
-    
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-    }
-    
-    .info-label {
-      color: #888;
-    }
-    
-    .animation-panel {
+
+    .kit-badge {
       position: absolute;
-      bottom: 4rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(22, 33, 62, 0.9);
-      padding: 1rem;
-      border-radius: 8px;
-      z-index: 5;
-      display: none;
-    }
-    
-    .animation-panel.visible {
-      display: block;
-    }
-    
-    .animation-select {
-      background: #0f3460;
-      color: #fff;
-      border: 1px solid #1a1a2e;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      min-width: 200px;
-    }
-    
-    #file-input {
-      display: none;
+      bottom: 16px;
+      right: 16px;
+      font-size: 10px;
+      color: rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.7);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(100, 116, 139, 0.3);
+      z-index: 10;
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">G</div>
-        <span class="logo-text">Grudge Studio Viewer</span>
-      </a>
-      <nav class="nav-links">
-        <a href="index.html">Arena Game</a>
-        <a href="playground.html">Playground</a>
-        <a href="viewer.html">3D Viewer</a>
-      </nav>
-    </header>
-    
-    <div class="main-content">
-      <aside class="sidebar">
-        <h3>Project Models</h3>
-        <div class="model-list" id="model-list">
-          <div class="model-item" data-model="/attached_assets/fps_shooter_game_arena_map_v3_1764916438142.glb">
-            <div class="model-icon">🏟️</div>
-            <div class="model-info">
-              <div class="model-name">Arena Map</div>
-              <div class="model-meta">GLB • Arena Environment</div>
-            </div>
-          </div>
-          <div class="model-item" data-model="/attached_assets/uploads_files_3852717_Gladiator_1765184552888.glb">
-            <div class="model-icon">⚔️</div>
-            <div class="model-info">
-              <div class="model-name">Gladiator</div>
-              <div class="model-meta">GLB • Character</div>
-            </div>
-          </div>
-        </div>
-        
-        <h3 style="margin-top: 1.5rem;">Animation Clips</h3>
-        <div id="animation-list" class="model-list"></div>
-      </aside>
-      
-      <div class="viewer-container">
-        <div id="viewer"></div>
-        
-        <div class="dropzone" id="dropzone">
-          <div class="dropzone-content">
-            <div class="dropzone-icon">📦</div>
-            <h2 class="dropzone-title">Drop 3D Model Here</h2>
-            <p class="dropzone-subtitle">Or click the button below to browse</p>
-            <button class="open-btn" id="open-btn">Open 3D Model</button>
-            <p class="formats">Supports: GLB, GLTF, OBJ, FBX, STL, 3DS, DAE, PLY</p>
-          </div>
-        </div>
-        
-        <div class="info-panel" id="info-panel">
-          <div class="info-row">
-            <span class="info-label">Meshes:</span>
-            <span id="mesh-count">0</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Vertices:</span>
-            <span id="vertex-count">0</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Triangles:</span>
-            <span id="triangle-count">0</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Animations:</span>
-            <span id="animation-count">0</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Bones:</span>
-            <span id="bone-count">0</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Skinned Meshes:</span>
-            <span id="skinned-mesh-count">0</span>
-          </div>
-        </div>
-        
-        <div class="animation-panel" id="animation-panel">
-          <div style="display: flex; flex-direction: column; gap: 0.75rem; min-width: 320px;">
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-              <select class="animation-select" id="animation-select" style="flex: 1;">
-                <option value="">Select Animation</option>
-              </select>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <button class="control-btn" id="btn-play-pause" style="width: 36px; height: 36px;">⏸️</button>
-              <input type="range" id="animation-timeline" min="0" max="100" value="0" style="flex: 1; accent-color: #e94560;">
-              <span id="animation-time" style="font-size: 0.75rem; min-width: 90px; text-align: right;">0.00s / 0.00s</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <button class="control-btn" id="btn-speed-down" style="width: 32px; height: 32px; font-size: 0.75rem;">-</button>
-                <span id="speed-display" style="font-size: 0.875rem; min-width: 50px; text-align: center;">1.00x</span>
-                <button class="control-btn" id="btn-speed-up" style="width: 32px; height: 32px; font-size: 0.75rem;">+</button>
-              </div>
-              <div style="font-size: 0.75rem; color: #888;">
-                <span id="current-animation">No animation</span> - <span id="animation-duration">0.00s</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="controls-panel">
-          <button class="control-btn" id="btn-reset" title="Reset View">🔄</button>
-          <button class="control-btn" id="btn-wireframe" title="Toggle Wireframe">🔲</button>
-          <button class="control-btn" id="btn-grid" title="Toggle Grid">📐</button>
-          <button class="control-btn" id="btn-skeleton" title="Show Skeleton">🦴</button>
-          <button class="control-btn" id="btn-info" title="Model Info">ℹ️</button>
+      <div class="brand">
+        <div class="brand-badge" id="brand-abbr">BRB</div>
+        <div>
+          <div class="brand-title" id="brand-name">Barbarians</div>
+          <div class="brand-sub">Character Viewer</div>
         </div>
       </div>
+
+      <div class="divider"></div>
+      <div id="race-bar"></div>
+
+      <div class="header-right">
+        <span id="status-text">Initializing…</span>
+        <nav class="nav-links">
+          <a href="character-builder.html">Foundry</a>
+          <a href="skill-tree.html">Skills</a>
+          <a href="index.html">Arena</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="viewport">
+      <div id="viewer"></div>
+
+      <div id="info-panel">
+        <div><strong>Kit</strong> grudge-studio/character-kit</div>
+        <div>Loading GRUDGE 6 roster…</div>
+      </div>
+
+      <div class="controls-bar">
+        <select class="animation-select" id="animation-select" title="Baked Bip001 clips">
+          <option value="">Animations</option>
+        </select>
+        <label class="toggle-label">
+          <input type="checkbox" id="toggle-skeleton"> Skeleton
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="toggle-grid" checked> Grid
+        </label>
+      </div>
+
+      <div class="kit-badge">Bip001 · baked clips · Mixamo map offline</div>
     </div>
   </div>
-  
-  <input type="file" id="file-input" accept=".glb,.gltf,.obj,.fbx,.stl,.3ds,.dae,.ply" multiple>
-  
-  <script type="module" src="/src/viewer/main.js"></script>
+
+  <script type="module" src="/src/viewer/grudge6-main.js"></script>
 </body>
 </html>
