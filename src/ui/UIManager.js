@@ -1,5 +1,6 @@
 import { GameState } from '../core/GameState.js'
 import { appUrl } from '../lib/appUrl.js'
+import { HUB_LINKS } from '../../grudge-studio/hub/links.js'
 
 export class UIManager {
   constructor() {
@@ -47,6 +48,22 @@ export class UIManager {
     document.getElementById('btn-playground')?.addEventListener('click', () => {
       window.location.href = appUrl('playground.html')
     })
+
+    document.getElementById('btn-editor')?.addEventListener('click', () => {
+      window.location.href = appUrl('editor.html')
+    })
+
+    document.getElementById('btn-voxel')?.addEventListener('click', () => {
+      window.location.href = appUrl('playground.html')
+    })
+
+    document.getElementById('btn-ai-map')?.addEventListener('click', () => {
+      if (this.callbacks.onWorldBuilder) this.callbacks.onWorldBuilder()
+    })
+
+    document.getElementById('btn-ground-rts')?.addEventListener('click', () => {
+      window.open(HUB_LINKS.groundRts, '_blank', 'noopener,noreferrer')
+    })
     
     document.getElementById('btn-builder')?.addEventListener('click', () => {
       window.location.href = appUrl('character-builder.html')
@@ -61,7 +78,7 @@ export class UIManager {
     })
     
     document.getElementById('btn-assets')?.addEventListener('click', () => {
-      window.location.href = appUrl('assets.html')
+      window.open(HUB_LINKS.assetCdn, '_blank', 'noopener,noreferrer')
     })
     
     document.getElementById('btn-resume')?.addEventListener('click', () => {

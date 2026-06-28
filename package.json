@@ -7,11 +7,13 @@
   "exports": {
     ".": "./grudge-studio/canonical/index.js",
     "./kit": "./grudge-studio/kit/index.js",
-    "./canonical": "./grudge-studio/canonical/index.js"
+    "./canonical": "./grudge-studio/canonical/index.js",
+    "./hub": "./grudge-studio/hub/links.js"
   },
   "files": [
     "grudge-studio/kit",
     "grudge-studio/canonical",
+    "grudge-studio/hub",
     "grudge-studio/stats"
   ],
   "description": "Grudge Playground - Canonical game development SDK and editor for the Grudge Studio ecosystem",

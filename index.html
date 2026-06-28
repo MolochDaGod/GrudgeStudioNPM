@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Grudge Arena 3D</title>
+    <title>Grudge Studio — World & Game Creation Hub</title>
     <link rel="icon" href="favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
     <link rel="apple-touch-icon" href="favicon.png" />
@@ -15,8 +15,8 @@
     <div id="ui-overlay">
       <div id="loading-screen" class="screen active">
         <div class="loading-content">
-          <h1 class="game-title">GRUDGE ARENA</h1>
-          <p class="subtitle">3D Battle Arena</p>
+          <h1 class="game-title">GRUDGE STUDIO</h1>
+          <p class="subtitle">World &amp; Game Creation Hub</p>
           <div class="loading-bar">
             <div class="loading-progress"></div>
           </div>
@@ -26,79 +26,116 @@
       
       <div id="menu-screen" class="screen">
         <div class="menu-content expanded">
-          <h1 class="game-title">GRUDGE ARENA</h1>
-          <p class="subtitle">3D Battle Arena & Game Development SDK</p>
+          <h1 class="game-title">GRUDGE STUDIO</h1>
+          <p class="subtitle">World &amp; Game Creation Hub</p>
+
+          <div class="pipeline-strip" id="pipeline-strip">
+            <span class="pipeline-badge">R2 CDN</span>
+            <span class="pipeline-badge">D1 Heroes</span>
+            <span class="pipeline-badge">Bip001 Baked Anims</span>
+            <span class="pipeline-badge">GRUDGE 6 Races</span>
+          </div>
           
           <div class="examples-section">
-            <h2 class="section-title">Game Examples</h2>
+            <h2 class="section-title">World &amp; Game Creation</h2>
             <div class="examples-grid">
-              <div class="example-card primary" id="card-arena">
-                <div class="card-icon">&#9876;</div>
-                <h3>Arena Combat</h3>
-                <p>3D fighting arena with AI opponents, combat system, and skill-based gameplay</p>
-                <button id="btn-arena" class="menu-btn primary">Play Now</button>
-              </div>
-              <div class="example-card" id="card-playground">
-                <div class="card-icon">&#127918;</div>
-                <h3>3D Playground</h3>
-                <p>Interactive showcase of physics, shaders, particles, and camera systems</p>
-                <button id="btn-playground" class="menu-btn">Explore</button>
-              </div>
-              <div class="example-card" id="card-world-builder">
+              <div class="example-card primary featured" id="card-world-builder">
+                <span class="card-tag">Best-in-class</span>
                 <div class="card-icon">&#127959;</div>
                 <h3>World Builder</h3>
-                <p>Visual scene editor with terrain sculpting, object placement, and scripting</p>
-                <button id="btn-world-builder" class="menu-btn">Open Editor</button>
+                <p>Unity-style editor — terrain sculpt, AI biome generation (8 biomes), 15 map templates, prefabs, navmesh, and Lua scripting</p>
+                <button id="btn-world-builder" class="menu-btn primary">Open World Builder</button>
+              </div>
+              <div class="example-card featured" id="card-playground">
+                <span class="card-tag">Voxel + Scene</span>
+                <div class="card-icon">&#127918;</div>
+                <h3>Editor Playground</h3>
+                <p>Full scene lab — placement tools, transform gizmos, spawn points, pathfinding tests, and play mode with chase camera</p>
+                <button id="btn-playground" class="menu-btn">Open Playground</button>
+              </div>
+              <div class="example-card featured" id="card-editor">
+                <span class="card-tag">Asset Studio</span>
+                <div class="card-icon">&#128736;</div>
+                <h3>Grudge Editor</h3>
+                <p>Drag-and-drop asset library, hierarchy inspector, GPU tier badge, and export pipeline for game-ready scenes</p>
+                <button id="btn-editor" class="menu-btn">Open Editor</button>
+              </div>
+            </div>
+            <div class="examples-grid small" style="margin-top: 1rem;">
+              <div class="example-card tool" id="card-voxel">
+                <div class="card-icon">&#127912;</div>
+                <h3>Voxel Animator</h3>
+                <p>Paint-based body-part brushes — pose, wave, pulse, spin, bounce, tremble with 6 easing curves</p>
+                <button id="btn-voxel" class="menu-btn secondary">Animate</button>
+              </div>
+              <div class="example-card tool" id="card-ai-map">
+                <div class="card-icon">&#127758;</div>
+                <h3>AI Map Generator</h3>
+                <p>Simplex noise biomes, Poisson decorations, settlements, roads, and dungeon BSP layouts</p>
+                <button id="btn-ai-map" class="menu-btn secondary">Generate</button>
+              </div>
+              <div class="example-card tool external" id="card-ground-rts">
+                <span class="card-tag external-tag">Live</span>
+                <div class="card-icon">&#9876;&#65039;</div>
+                <h3>Hero Ground RTS</h3>
+                <p>GRUDA Armada — hero units with R2 textures, skill icons, and RTS mechanics. Canonical D1 hero roster.</p>
+                <button id="btn-ground-rts" class="menu-btn secondary">Launch RTS</button>
+              </div>
+              <div class="example-card tool" id="card-arena">
+                <div class="card-icon">&#129354;</div>
+                <h3>Arena Combat</h3>
+                <p>3D fighting arena — AI opponents, target lock, weapon skills, and action-bar combat</p>
+                <button id="btn-arena" class="menu-btn secondary">Play Arena</button>
               </div>
             </div>
           </div>
           
           <div class="examples-section">
-            <h2 class="section-title">SDK Tools</h2>
+            <h2 class="section-title">GRUDGE 6 Character Kit</h2>
             <div class="examples-grid small">
+              <div class="example-card tool" id="card-viewer">
+                <div class="card-icon">&#128065;</div>
+                <h3>Character Viewer</h3>
+                <p>All 6 Bip001 champions — baked clips, skeleton toggle, Mixamo map offline</p>
+                <button id="btn-viewer" class="menu-btn secondary">View Races</button>
+              </div>
               <div class="example-card tool" id="card-builder">
                 <div class="card-icon">&#129497;</div>
                 <h3>Character Builder</h3>
-                <p>Create and customize 3D characters with modular parts</p>
-                <button id="btn-builder" class="menu-btn secondary">Open</button>
+                <p>GRUDGE 6 race picker, attribute point-buy, and canonical professions</p>
+                <button id="btn-builder" class="menu-btn secondary">Build</button>
               </div>
               <div class="example-card tool" id="card-skills">
                 <div class="card-icon">&#127793;</div>
-                <h3>Skill Tree Editor</h3>
-                <p>Design character progression with unlockable abilities</p>
-                <button id="btn-skills" class="menu-btn secondary">Open</button>
-              </div>
-              <div class="example-card tool" id="card-viewer">
-                <div class="card-icon">&#128065;</div>
-                <h3>Model Viewer</h3>
-                <p>Preview and inspect 3D models with animation support</p>
-                <button id="btn-viewer" class="menu-btn secondary">Open</button>
+                <h3>Skill Tree</h3>
+                <p>Warrior · Mage · Ranger · Worge — class trees + weapon mastery</p>
+                <button id="btn-skills" class="menu-btn secondary">Skills</button>
               </div>
               <div class="example-card tool" id="card-assets">
-                <div class="card-icon">&#128194;</div>
-                <h3>Asset Browser</h3>
-                <p>Browse and manage game assets, textures, and models</p>
-                <button id="btn-assets" class="menu-btn secondary">Open</button>
+                <div class="card-icon">&#9729;</div>
+                <h3>R2 Asset CDN</h3>
+                <p>assets.grudge-studio.com — FBX, WebP, baked anims, RTS unit GLBs</p>
+                <button id="btn-assets" class="menu-btn secondary">Browse</button>
               </div>
             </div>
           </div>
           
           <div class="features-section">
-            <h2 class="section-title">Engine Features</h2>
+            <h2 class="section-title">Pipeline Best Practices</h2>
             <div class="features-list">
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Three.js 3D Rendering</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Rapier 3D Physics</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Combat System</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> AI Opponents</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Procedural Terrain</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Vehicle Physics</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Lua Scripting</div>
-              <div class="feature-item"><span class="feature-check">&#10003;</span> Animation System</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> R2 object keys = URL paths (no app rewrites)</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> D1 hero catalog (raceId × classId × grudgeId)</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Bip001 rotation-only baked clips</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> WebP race texture sheets</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Voxel animation brush authoring</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> 8-biome AI terrain generation</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> RTS unit GLBs on grudge-nexus/models/rts</div>
+              <div class="feature-item"><span class="feature-check">&#10003;</span> Rapier 3D + Three.js PBR</div>
             </div>
           </div>
           
           <div class="controls-hint">
-            <p>WASD - Move | SPACE - Jump | Mouse - Look | TAB - Target Lock</p>
+            <p>World Builder: W/E/R gizmos · Playground: B sculpt · P place · Arena: WASD + TAB lock</p>
           </div>
         </div>
       </div>
