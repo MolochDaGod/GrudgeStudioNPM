@@ -1,0 +1,19 @@
+{
+  "name": "grudge-studio-npm",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Grudge Studio quality system — bake, character, NPC/units, animator, engine, editor/deployer packages. Surface: forge.grudge-studio.com",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @grudge-studio/core && npm run build -w @grudge-studio/asset-resolver && npm run build -w @grudge-studio/assets && npm run build -w @grudge-studio/character && npm run build -w @grudge-studio/units && npm run build -w @grudge-studio/bake && npm run build -w @grudge-studio/engine && npm run build -w @grudge-studio/stack && npm run build -w @grudge-studio/animator && npm run build -w @grudge-studio/deploy && npm run build -w @grudge-studio/sdk",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "publish:dry": "npm run build && npm publish --workspaces --dry-run --access public",
+    "publish:all": "npm run build && npm publish --workspaces --access public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

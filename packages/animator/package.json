@@ -1,0 +1,58 @@
+{
+  "name": "@grudge-studio/animator",
+  "version": "0.3.0",
+  "description": "LocomotionCore (gait + weapon-skill blend), AnimationDirector, blend helpers for Bip001 / Three.js mixers.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "grudge-studio",
+    "three.js",
+    "fleet"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MolochDaGod/GrudgeStudioNPM.git",
+    "directory": "packages/animator"
+  },
+  "dependencies": {
+    "@grudge-studio/assets": "0.3.0",
+    "@grudge-studio/core": "0.3.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "@types/three": "^0.170.0"
+  },
+  "peerDependencies": {
+    "three": ">=0.160.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    }
+  }
+}

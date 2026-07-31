@@ -1,0 +1,46 @@
+{
+  "name": "@grudge-studio/character",
+  "version": "0.3.0",
+  "description": "Grudge character quality system — deploy order, Box3 ground, hip-Y free motion, pack binding.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": { "access": "public" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MolochDaGod/GrudgeStudioNPM.git",
+    "directory": "packages/character"
+  },
+  "dependencies": {
+    "@grudge-studio/assets": "0.3.0",
+    "@grudge-studio/core": "0.3.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "@types/three": "^0.185.0"
+  },
+  "peerDependencies": {
+    "three": ">=0.160.0"
+  },
+  "peerDependenciesMeta": {
+    "three": { "optional": true }
+  }
+}
