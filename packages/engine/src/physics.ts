@@ -1,24 +1,77 @@
 /**
- * @grudge-studio/engine physics SSOT notes + debug gate.
+ * @grudge-studio/engine physics SSOT — constants + CCT configure.
  *
- * Runtime implementation lives in each game host (WASM peer deps):
- *   - GrudgeBuilder Island3D: client/src/island3d/physics/{PhysicsWorld,RapierHelper}
- *   - Mine-Loader voxelcraft: src/lib/physics/{WorldPhysics,RapierHelper}
- *   - warlord-genesis R3F: @react-three/rapier <Physics debug={…}>
+ * WASM world still lives in the host (Island3D PhysicsWorld, Open
+ * CharacterCapsuleKcc, Casting PhysicsWorld). This package does not
+ * ship Rapier. Hosts call configureRapierCharacterController(cct).
  *
- * All 3D deploy surfaces MUST:
- *   1. Use Rapier (@dimforge/rapier3d-compat or @react-three/rapier) — one engine per game
- *   2. Fixed 60Hz step, SI meters (1 unit = 1 m)
- *   3. Heightfield for regular terrain grids; trimesh/cuboid for GLB / authored boxes
- *   4. Gate debug wires: ?physicsDebug=1 or localStorage grudge_physics_debug=1
+ * Walk = Rapier kinematic CCT. three-mesh-bvh = pick/camera only.
  */
 
-export const PHYSICS_DEFAULTS = {
-  gravityY: -30,
-  fixedStep: 1 / 60,
-  characterHeightM: 1.85,
-  capsuleRadiusM: 0.35,
+/** Duck-typed Rapier KinematicCharacterController (avoid WASM in this package). */
+export type RapierCharacterController = {
+  setUp?: (v: { x: number; y: number; z: number }) => void;
+  setMaxSlopeClimbAngle: (rad: number) => void;
+  setMinSlopeSlideAngle: (rad: number) => void;
+  enableAutostep: (maxHeight: number, minWidth: number, includeDynamics: boolean) => void;
+  enableSnapToGround: (dist: number) => void;
+  setApplyImpulsesToDynamicBodies: (on: boolean) => void;
+};
+
+export const HUMAN_CCT = {
+  /** SI metres — Open PLAYER_CAPSULE / Island3D addCharacterCapsule */
+  radius: 0.35,
+  halfHeight: 0.55,
+  /** Skin; Island3D uses 0.01, Open 0.08 — hosts pick at createCharacterController */
+  controllerOffset: 0.08,
+  autostepHeight: 0.5,
+  autostepMinWidth: 0.2,
+  snapToGround: 0.5,
+  maxSlopeClimbDeg: 45,
+  minSlopeSlideDeg: 30,
+  applyImpulsesToDynamic: true,
 } as const;
+
+export const PHYSICS_DEFAULTS = {
+  /** Rapier world gravity for dynamics / vehicles */
+  gravityY: -9.81,
+  /** CCT desired-Y gravity (Open CharacterCapsuleKcc / Controller) */
+  characterGravityY: -12,
+  fixedStep: 1 / 60,
+  maxSubsteps: 5,
+  characterHeightM: 1.8,
+  capsuleRadiusM: HUMAN_CCT.radius,
+  capsuleHalfHeightM: HUMAN_CCT.halfHeight,
+  walkAuthority: "rapier-cct" as const,
+  pickAuthority: "three-mesh-bvh" as const,
+} as const;
+
+export function capsuleCenterOffset(
+  radius = HUMAN_CCT.radius,
+  halfHeight = HUMAN_CCT.halfHeight,
+): number {
+  return radius + halfHeight;
+}
+
+/** Island3D / Casting law: gravity in desired movement, not RB forces. */
+export function configureRapierCharacterController(
+  cct: RapierCharacterController,
+  opts: Partial<typeof HUMAN_CCT> = {},
+): void {
+  const c = { ...HUMAN_CCT, ...opts };
+  cct.setUp?.({ x: 0, y: 1, z: 0 });
+  cct.setMaxSlopeClimbAngle((c.maxSlopeClimbDeg * Math.PI) / 180);
+  cct.setMinSlopeSlideAngle((c.minSlopeSlideDeg * Math.PI) / 180);
+  cct.enableAutostep(c.autostepHeight, c.autostepMinWidth, true);
+  cct.enableSnapToGround(c.snapToGround);
+  cct.setApplyImpulsesToDynamicBodies(c.applyImpulsesToDynamic);
+}
+
+export function applyGamepadDeadzone(v: number, zone = 0.18): number {
+  const a = Math.abs(v);
+  if (a < zone) return 0;
+  return Math.sign(v) * ((a - zone) / (1 - zone));
+}
 
 export type PhysicsDebugGate = {
   query: boolean;
@@ -60,14 +113,32 @@ export function readPhysicsDebugGate(
 
 export const PHYSICS_FLEET_SURFACES = [
   {
+    id: "open-danger",
+    host: "open.grudge-studio.com/danger",
+    engine: "Controller.ts + CharacterCapsuleKcc",
+    physics: "Rapier CCT",
+  },
+  {
     id: "client-island3d",
     host: "client.grudge-studio.com",
     engine: "Island3DEngine",
-    physics: "PhysicsWorld + RapierHelper",
+    physics: "PhysicsWorld.addCharacterCapsule + moveCharacter",
+  },
+  {
+    id: "casting",
+    host: "casting.grudge-studio.com",
+    engine: "loadRaceKit + PhysicsWorld",
+    physics: "Rapier CCT",
+  },
+  {
+    id: "gladiators",
+    host: "grudge-combat.vercel.app",
+    engine: "combat lab",
+    physics: "Rapier CCT",
   },
   {
     id: "mine-loader",
-    host: "mine-loader / voxelcraft",
+    host: "mineloader.grudge-studio.com",
     engine: "VoxelEngine",
     physics: "WorldPhysics + RapierHelper",
   },
@@ -76,11 +147,5 @@ export const PHYSICS_FLEET_SURFACES = [
     host: "warlords /edit + warcamp",
     engine: "R3F Game",
     physics: "@react-three/rapier Physics debug=",
-  },
-  {
-    id: "danger-room",
-    host: "threejs-rapier-react-three-controller",
-    engine: "Danger Room",
-    physics: "@dimforge/rapier3d-compat (reference)",
   },
 ] as const;

@@ -6,6 +6,8 @@ export const RUNTIME_3D_REQUIREMENTS = {
   three: "^0.185",
   physics: ["@dimforge/rapier3d-compat", "@react-three/rapier"] as const,
   optionalBvh: "three-mesh-bvh",
+  walk: "rapier-cct",
+  pick: "three-mesh-bvh",
   optionalPathfinding: "three-pathfinding",
   stateUi: "zustand",
   qualityNpm: [

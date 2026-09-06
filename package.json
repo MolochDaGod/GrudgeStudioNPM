@@ -1,7 +1,7 @@
 {
   "name": "grudge-studio-npm",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Grudge Studio quality system — bake, character, NPC/units, animator, engine, editor/deployer packages. Surface: forge.grudge-studio.com",
   "type": "module",
   "workspaces": [

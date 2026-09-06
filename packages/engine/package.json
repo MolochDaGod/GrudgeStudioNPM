@@ -1,7 +1,7 @@
 {
   "name": "@grudge-studio/engine",
-  "version": "0.3.0",
-  "description": "Minimal Grudge engine boot, manifest, terrain helpers for Three.js games.",
+  "version": "0.3.1",
+  "description": "Grudge engine boot, CCT contract, playtest hosts, terrain helpers for Three.js games.",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": false,

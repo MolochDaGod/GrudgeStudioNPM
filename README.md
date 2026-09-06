@@ -80,7 +80,7 @@ const flags = recommendedBakeFlags("character_kit");
 | **Anim blending** | `@grudge-studio/animator` | One AnimationDirector; gait + one-shots |
 | **Editor** | Forge + `@grudge-studio/deploy` | No parallel editor SSOT |
 | **Deployer** | `@grudge-studio/deploy` + `stack` | QUALITY_SYSTEM + rewrites |
-| **Runtime 3D** | Host `three` + Rapier + engine hints | SDK does not replace physics |
+| **Runtime 3D** | Host `three` + Rapier + `HUMAN_CCT` | SDK does not ship WASM; host `createCharacterController` |
 
 ---
 

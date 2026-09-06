@@ -11,7 +11,7 @@ Games **cannot install it from npm** yet, and most still run **local** animators
 | **npm login** | **No** — `whoami` → **401** |
 | **Installed in games** | Almost none (Forge had optional check only) |
 | **Full character controller in SDK** | **No** — host still owns Rapier capsule + camera |
-| **Physics engine in SDK** | **Defaults + debug gate only** — WASM lives in the game |
+| **Physics engine in SDK** | **HUMAN_CCT + configureRapierCharacterController (0.3.1)** — WASM still in the game |
 | **Local forks** | Flare `PlayerAnimator`, animator lab, Island3D still parallel |
 
 So the gap is not “we can’t design it” — it’s **publish → install → wire runtime** that never finished.
