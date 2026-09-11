@@ -11,6 +11,15 @@ export async function fetchObjectStoreJson<T = unknown>(
   return res.json() as Promise<T>;
 }
 
+export async function fetchObjectStoreCatalog<T = string[]>(
+  init?: RequestInit,
+): Promise<T> {
+  const base = getFleetUrls().objectStore.replace(/\/$/, "");
+  const res = await fetch(`${base}/catalog`, init);
+  if (!res.ok) throw new Error(`ObjectStore catalog: ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
 export const OBJECTSTORE_KEYS = [
   "weapons",
   "equipment",
