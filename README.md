@@ -27,14 +27,30 @@
 
 ## Install
 
+**Git is the path until npmjs exists** (`@grudge-studio/*` 404s on the public registry). Clone this repo next to the game. Internal deps are `"*"` so `npm install` here links workspaces and does not fetch `@grudge-studio` from npmjs.
+
 ```bash
-npm install @grudge-studio/sdk three@^0.185.1 @dimforge/rapier3d-compat@^0.19.3
-# R3F worlds (Grok Builder / Forge):
-#   @react-three/fiber@^9.7.0 @react-three/drei@^10.7.8 @react-three/rapier@^2.2.0
-# Type defs MUST match three — @types/three@^0.185.4 (not 0.170)
-# or slices:
-npm install @grudge-studio/character @grudge-studio/units @grudge-studio/bake @grudge-studio/deploy
+cd F:\GitHub\GrudgeStudioNPM
+npm install
+npm run ci
 ```
+
+In a game `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@grudge-studio/sdk": "file:../GrudgeStudioNPM/packages/sdk",
+    "three": "^0.185.1",
+    "@dimforge/rapier3d-compat": "^0.19.3"
+  }
+}
+```
+
+R3F worlds (Grok Builder / Forge): `@react-three/fiber@^9.7.0` `@react-three/drei@^10.7.8` `@react-three/rapier@^2.2.0`.  
+Type defs MUST match three — `@types/three@^0.185.4` (not 0.170).
+
+Dev Tool snapshot: `npm run sync:dev-tool` copies animator/assets/core/engine dist into sibling `grudge-dev-tool/vendor/@grudge-studio`.
 
 ---
 

@@ -28,11 +28,11 @@
     "directory": "packages/deploy"
   },
   "dependencies": {
-    "@grudge-studio/bake": "0.3.0",
-    "@grudge-studio/character": "0.3.0",
-    "@grudge-studio/core": "0.3.0",
-    "@grudge-studio/stack": "0.3.0",
-    "@grudge-studio/units": "0.3.0"
+    "@grudge-studio/bake": "*",
+    "@grudge-studio/character": "*",
+    "@grudge-studio/core": "*",
+    "@grudge-studio/stack": "*",
+    "@grudge-studio/units": "*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

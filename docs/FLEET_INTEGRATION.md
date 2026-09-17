@@ -69,6 +69,10 @@ npm i @grudge-studio/sdk@^0.3.2 three@^0.185.1 @dimforge/rapier3d-compat@^0.19.3
 # Types: @types/three@^0.185.4 — 0.170 defs are wrong for r185
 ```
 
+**B. Local file: deps (current — no npmjs)**
+
+Internal `@grudge-studio/*` versions in this monorepo are `"*"` (workspace link). Do **not** pin `0.3.0` in this repo; that 404s against the public registry.
+
 **B. Local file: deps (dev / now, no registry)**
 
 ```json

@@ -39,7 +39,7 @@
     "directory": "packages/stack"
   },
   "dependencies": {
-    "@grudge-studio/core": "0.3.0"
+    "@grudge-studio/core": "*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

@@ -1,6 +1,11 @@
-﻿node_modules/
-dist/
+node_modules/
+pack/
 .env
 .env.*
 *.log
 .DS_Store
+Thumbs.db
+.history/
+
+# Package dist/ is committed so file: and git consumers work without tsup.
+# Do not ignore packages/*/dist.

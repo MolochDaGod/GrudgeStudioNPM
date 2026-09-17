@@ -10,10 +10,18 @@
   "scripts": {
     "build": "npm run build -w @grudge-studio/core && npm run build -w @grudge-studio/asset-resolver && npm run build -w @grudge-studio/assets && npm run build -w @grudge-studio/character && npm run build -w @grudge-studio/units && npm run build -w @grudge-studio/bake && npm run build -w @grudge-studio/engine && npm run build -w @grudge-studio/stack && npm run build -w @grudge-studio/animator && npm run build -w @grudge-studio/deploy && npm run build -w @grudge-studio/sdk",
     "typecheck": "npm run typecheck --workspaces --if-present",
+    "ci": "npm run typecheck && npm run build",
+    "pack:all": "npm run build && node -e \"require('node:fs').mkdirSync('pack',{recursive:true})\" && npm pack --workspaces --pack-destination pack",
+    "sync:dev-tool": "node scripts/sync-vendor.mjs",
     "publish:dry": "npm run build && npm publish --workspaces --dry-run --access public",
     "publish:all": "npm run build && npm publish --workspaces --access public"
   },
   "engines": {
     "node": ">=20"
+  },
+  "packageManager": "npm@10.9.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MolochDaGod/GrudgeStudioNPM.git"
   }
 }

@@ -29,8 +29,8 @@
     "directory": "packages/character"
   },
   "dependencies": {
-    "@grudge-studio/assets": "0.3.0",
-    "@grudge-studio/core": "0.3.0"
+    "@grudge-studio/assets": "*",
+    "@grudge-studio/core": "*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

@@ -29,16 +29,16 @@
     "directory": "packages/sdk"
   },
   "dependencies": {
-    "@grudge-studio/core": "0.3.0",
-    "@grudge-studio/asset-resolver": "0.3.0",
-    "@grudge-studio/assets": "0.3.0",
-    "@grudge-studio/animator": "0.3.1",
-    "@grudge-studio/engine": "0.3.2",
-    "@grudge-studio/stack": "0.3.0",
-    "@grudge-studio/character": "0.3.1",
-    "@grudge-studio/units": "0.3.0",
-    "@grudge-studio/bake": "0.3.0",
-    "@grudge-studio/deploy": "0.3.1"
+    "@grudge-studio/core": "*",
+    "@grudge-studio/asset-resolver": "*",
+    "@grudge-studio/assets": "*",
+    "@grudge-studio/animator": "*",
+    "@grudge-studio/engine": "*",
+    "@grudge-studio/stack": "*",
+    "@grudge-studio/character": "*",
+    "@grudge-studio/units": "*",
+    "@grudge-studio/bake": "*",
+    "@grudge-studio/deploy": "*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

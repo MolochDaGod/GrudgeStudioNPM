@@ -28,8 +28,8 @@
     "directory": "packages/bake"
   },
   "dependencies": {
-    "@grudge-studio/assets": "0.3.0",
-    "@grudge-studio/character": "0.3.0"
+    "@grudge-studio/assets": "*",
+    "@grudge-studio/character": "*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
