@@ -1,6 +1,6 @@
 {
   "name": "@grudge-studio/character",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Grudge character quality system — deploy order, Box3 ground, hip-Y free motion, pack binding.",
   "license": "UNLICENSED",
   "type": "module",
@@ -35,10 +35,10 @@
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
-    "@types/three": "^0.185.0"
+    "@types/three": "^0.185.4"
   },
   "peerDependencies": {
-    "three": ">=0.160.0"
+    "three": "^0.185.0"
   },
   "peerDependenciesMeta": {
     "three": { "optional": true }

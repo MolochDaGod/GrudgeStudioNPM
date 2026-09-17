@@ -1,6 +1,6 @@
 {
   "name": "@grudge-studio/sdk",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Umbrella export — quality system for bake, character, units/NPC, animator, engine, deploy, editor stack.",
   "license": "UNLICENSED",
   "type": "module",
@@ -32,13 +32,13 @@
     "@grudge-studio/core": "0.3.0",
     "@grudge-studio/asset-resolver": "0.3.0",
     "@grudge-studio/assets": "0.3.0",
-    "@grudge-studio/animator": "0.3.0",
-    "@grudge-studio/engine": "0.3.1",
+    "@grudge-studio/animator": "0.3.1",
+    "@grudge-studio/engine": "0.3.2",
     "@grudge-studio/stack": "0.3.0",
-    "@grudge-studio/character": "0.3.0",
+    "@grudge-studio/character": "0.3.1",
     "@grudge-studio/units": "0.3.0",
     "@grudge-studio/bake": "0.3.0",
-    "@grudge-studio/deploy": "0.3.0"
+    "@grudge-studio/deploy": "0.3.1"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

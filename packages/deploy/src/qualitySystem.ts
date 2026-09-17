@@ -33,7 +33,7 @@ export interface QualitySystemManifest {
 
 /** SSOT manifest — import from Forge, CI, or game onboarding */
 export const QUALITY_SYSTEM: QualitySystemManifest = {
-  version: "0.3.0",
+  version: "0.3.2",
   editorUrl: "https://forge.grudge-studio.com",
   cdn: DEFAULT_FLEET_URLS.assets,
   domains: ["bake", "character", "npc", "unit", "editor", "deployer", "runtime_3d"],
@@ -44,8 +44,11 @@ export const QUALITY_SYSTEM: QualitySystemManifest = {
   defaultUnitCount: DEFAULT_UNIT_CATALOG.length,
   defaultNpcCount: DEFAULT_NPC_CATALOG.length,
   requiredHostPackages: [
-    "three@^0.185",
-    "@dimforge/rapier3d-compat OR @react-three/rapier",
+    "three@^0.185.1",
+    "@types/three@^0.185.4",
+    "@dimforge/rapier3d-compat@^0.19.3 OR @react-three/rapier@^2.2.0",
+    "@react-three/fiber@^9.7.0 (R3F hosts)",
+    "@react-three/drei@^10.7.8 (R3F hosts)",
   ],
   requiredNpmSlices: [
     "@grudge-studio/sdk",
@@ -74,7 +77,9 @@ export function qualityChecklist(): string[] {
     "[ ] NPC/unit defs from @grudge-studio/units (+ ObjectStore extensions)",
     "[ ] Editor = forge.grudge-studio.com (no parallel editor SSOT)",
     "[ ] Deployer uses QUALITY_SYSTEM + stack rewrites",
-    "[ ] Host has three + Rapier",
+    "[ ] Host has three@^0.185 + Rapier 0.19 (not 0.12 / not @types/three 0.170)",
+    "[ ] R3F worlds use fiber 9.7 + drei 10.7 + rapier 2.2 (Grok Builder pin)",
+    "[ ] World deploy: one Physics world, Vercel prebuilt SPA, wrangler Worker without WASM physics",
     "[ ] No Meshy/capsule heroes",
   ];
 }

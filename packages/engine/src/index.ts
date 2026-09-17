@@ -4,3 +4,5 @@ export * from "./terrain";
 export * from "./physics";
 export * from "./playtest";
 export * from "./quality";
+export * from "./hostStack";
+export * from "./worldDeploy";

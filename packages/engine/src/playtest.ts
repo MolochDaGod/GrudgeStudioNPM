@@ -69,6 +69,14 @@ export const PLAYTEST_WITH_CONTROLLER = [
     controller: "PlayRuntime (SceneEngine, no Rapier)",
     notes: "Desktop preview. Not production CCT.",
   },
+  {
+    id: "grok-builder",
+    label: "Grok Builder world",
+    url: "https://grok-builder.vercel.app/",
+    walk: "rapier-cct",
+    controller: "R3F <Physics> + Rapier 0.19 (edit Orbit / play CCT)",
+    notes: "Host pin SSOT: three 0.185.1, r3f 9.7, drei 10.7, @react-three/rapier 2.2. Vercel prebuilt + wrangler worker.",
+  },
 ] as const satisfies readonly PlaytestSurface[];
 
 export function productionPlaytestUrl(): string {

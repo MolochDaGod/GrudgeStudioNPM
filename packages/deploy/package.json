@@ -1,6 +1,6 @@
 {
   "name": "@grudge-studio/deploy",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Deployer + editor quality system — surfaces, checklists, package requirements for Grudge Studio.",
   "license": "UNLICENSED",
   "type": "module",

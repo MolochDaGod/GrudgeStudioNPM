@@ -18,6 +18,19 @@ export type RapierCharacterController = {
   setApplyImpulsesToDynamicBodies: (on: boolean) => void;
 };
 
+/** Play collider classes — Casting / Island3D SSOT. Do not invent a second library. */
+export const COLLIDER_CLASSES = [
+  "cct",
+  "heightfield",
+  "convex",
+  "trimesh",
+  "followConvex",
+  "sensor",
+  "hurtbox",
+] as const;
+
+export type ColliderClass = (typeof COLLIDER_CLASSES)[number];
+
 export const HUMAN_CCT = {
   /** SI metres — Open PLAYER_CAPSULE / Island3D addCharacterCapsule */
   radius: 0.35,

@@ -64,8 +64,9 @@ npm run publish:all
 Then in each game:
 
 ```bash
-npm i @grudge-studio/sdk@^0.3.0 three@^0.185
-# + rapier as already required
+npm i @grudge-studio/sdk@^0.3.2 three@^0.185.1 @dimforge/rapier3d-compat@^0.19.3
+# R3F: @react-three/fiber@^9.7 @react-three/drei@^10.7 @react-three/rapier@^2.2
+# Types: @types/three@^0.185.4 — 0.170 defs are wrong for r185
 ```
 
 **B. Local file: deps (dev / now, no registry)**

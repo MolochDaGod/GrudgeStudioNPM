@@ -7,7 +7,7 @@
 
 ---
 
-## Architecture (0.3.0)
+## Architecture (0.3.2)
 
 ```
 @grudge-studio/sdk                    ← install this (or slices)
@@ -28,7 +28,10 @@
 ## Install
 
 ```bash
-npm install @grudge-studio/sdk three @dimforge/rapier3d-compat
+npm install @grudge-studio/sdk three@^0.185.1 @dimforge/rapier3d-compat@^0.19.3
+# R3F worlds (Grok Builder / Forge):
+#   @react-three/fiber@^9.7.0 @react-three/drei@^10.7.8 @react-three/rapier@^2.2.0
+# Type defs MUST match three — @types/three@^0.185.4 (not 0.170)
 # or slices:
 npm install @grudge-studio/character @grudge-studio/units @grudge-studio/bake @grudge-studio/deploy
 ```
