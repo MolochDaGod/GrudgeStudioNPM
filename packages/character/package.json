@@ -15,22 +15,27 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MolochDaGod/GrudgeStudioNPM.git",
     "directory": "packages/character"
   },
   "dependencies": {
-    "@grudge-studio/assets": "*",
-    "@grudge-studio/core": "*"
+    "@grudge-studio/assets": "^0.3.0",
+    "@grudge-studio/core": "^0.3.0"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
@@ -41,6 +46,8 @@
     "three": "^0.185.0"
   },
   "peerDependenciesMeta": {
-    "three": { "optional": true }
+    "three": {
+      "optional": true
+    }
   }
 }

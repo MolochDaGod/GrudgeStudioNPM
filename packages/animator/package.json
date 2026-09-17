@@ -39,8 +39,8 @@
     "directory": "packages/animator"
   },
   "dependencies": {
-    "@grudge-studio/assets": "*",
-    "@grudge-studio/core": "*"
+    "@grudge-studio/assets": "^0.3.0",
+    "@grudge-studio/core": "^0.3.0"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

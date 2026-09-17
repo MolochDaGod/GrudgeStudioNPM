@@ -14,7 +14,8 @@
     "pack:all": "npm run build && node -e \"require('node:fs').mkdirSync('pack',{recursive:true})\" && npm pack --workspaces --pack-destination pack",
     "sync:dev-tool": "node scripts/sync-vendor.mjs",
     "publish:dry": "npm run build && npm publish --workspaces --dry-run --access public",
-    "publish:all": "npm run build && npm publish --workspaces --access public"
+    "publish:all": "npm run build && node scripts/publish-ordered.mjs",
+    "versions:pin": "node scripts/pin-workspace-versions.mjs"
   },
   "engines": {
     "node": ">=20"
