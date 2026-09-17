@@ -39,7 +39,7 @@ This monorepo (`F:\GitHub\GrudgeStudioNPM`):
 ```bash
 npm install
 npm run ci
-npm run publish:all   # uses ~/.npmrc //registry.npmjs.org/:_authToken
+npm run publish:all   # uses ~/.npmrc; requires npm org `grudge-studio` (create once at npmjs.com/org/create)
 ```
 
 If the public registry is still 404 (scope not published yet), games can use Git `file:`:
